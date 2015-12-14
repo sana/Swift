@@ -8,111 +8,59 @@
 
 import Foundation
 
-private enum CommandType {
+enum Command {
     case Unknown
-    case Set
-    case Get
-    case Unset
-    case NumEqualTo
+    case Set(key: String, value: String)
+    case Get(key: String)
+    case Unset(key: String)
+    case NumEqualTo(value: String)
     case End
     case Begin
     case Rollback
     case Commit
 }
 
-class Command {
-    private let commandType : CommandType
-    private let key : String?
-    private let value : String?
-    let description : String
-    
-    init(command: String) {
-        description = command
-        if (command.hasPrefix("SET")) {
-            self.commandType = CommandType.Set
-            let tokens = command.componentsSeparatedByString(" ")
-            assert(tokens.count == 3)
-            self.key = tokens[1]
-            self.value = tokens[2]
-        } else if (command.hasPrefix("GET")) {
-            self.commandType = CommandType.Get
-            let tokens = command.componentsSeparatedByString(" ")
-            assert(tokens.count == 2)
-            self.key = tokens[1]
-            self.value = nil
-        } else if (command.hasPrefix("UNSET")) {
-            self.commandType = CommandType.Unset
-            let tokens = command.componentsSeparatedByString(" ")
-            assert(tokens.count == 2)
-            self.key = tokens[1]
-            self.value = nil
-        } else if (command.hasPrefix("NUMEQUALTO")) {
-            self.commandType = CommandType.NumEqualTo
-            let tokens = command.componentsSeparatedByString(" ")
-            assert(tokens.count == 2)
-            self.key = tokens[1]
-            self.value = nil
-        } else if (command == "END") {
-            self.commandType = CommandType.End
-            self.key = nil
-            self.value = nil
-        } else if (command == "BEGIN") {
-            self.commandType = CommandType.Begin
-            self.key = nil
-            self.value = nil
-        } else if (command == "ROLLBACK") {
-            self.commandType = CommandType.Rollback
-            self.key = nil
-            self.value = nil
-        } else if (command == "COMMIT") {
-            self.commandType = CommandType.Commit
-            self.key = nil
-            self.value = nil
-        } else {
-            self.commandType = CommandType.Unknown
-            self.key = nil
-            self.value = nil
+enum Error: ErrorType {
+    case MissingKey(String)
+    case MissingValue(String)
+    case MissingCommand(String)
+    case UnexpectedCommand(String)
+}
+
+extension Command {
+    init(input: String) throws {
+        let tokens = input.componentsSeparatedByString(" ")
+        var generator = tokens.generate() // 1
+        guard let tok = generator.next()
+            else { throw Error.MissingCommand(input) } // 2
+        switch tok {
+        case "BEGIN":
+            self = Command.Begin
+        case "SET":
+            guard let key = generator.next()
+                else { throw Error.MissingKey(input) } // 3
+            guard let value = generator.next()
+                else { throw Error.MissingValue(input) }
+            self = Command.Set(key: key, value: value) // 4
+        case "GET":
+            guard let key = generator.next()
+                else { throw Error.MissingKey(input) } // 3
+            self = Command.Get(key: key)
+        case "UNSET":
+            guard let key = generator.next()
+                else { throw Error.MissingKey(input) } // 3
+            self = Command.Unset(key: key)
+        case "NUMEQUALTO":
+            guard let value = generator.next()
+                else { throw Error.MissingValue(input) } // 3
+            self = Command.NumEqualTo(value: value)
+        case "END":
+            self = Command.End
+        case "ROLLBACK":
+            self = Command.Rollback
+        case "COMMIT":
+            self = Command.Commit
+        default: throw Error.UnexpectedCommand(input)
         }
-        assert(self.commandType != CommandType.Unknown)
-    }
-    
-    func getKey() -> String {
-        return self.key!
-    }
-    
-    func getValue() -> String {
-        return self.value!
-    }
-    
-    func isSet() -> Bool {
-        return self.commandType == CommandType.Set
-    }
-    
-    func isGet() -> Bool {
-        return self.commandType == CommandType.Get
-    }
-    
-    func isUnset() -> Bool {
-        return self.commandType == CommandType.Unset
-    }
-    
-    func isEnd() -> Bool {
-        return self.commandType == CommandType.End
-    }
-    
-    func isNumEqualTo() -> Bool {
-        return self.commandType == CommandType.NumEqualTo
-    }
-    
-    func isBegin() -> Bool {
-        return self.commandType == CommandType.Begin
-    }
-
-    func isRollback() -> Bool {
-        return self.commandType == CommandType.Rollback
-    }
-
-    func isCommit() -> Bool {
-        return self.commandType == CommandType.Commit
     }
 }
