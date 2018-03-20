@@ -18,6 +18,12 @@ protocol Visitor {
     func visit(string: String)
 }
 
+class GenericVisitor<T: Comparable> {
+    func visit(key: T) {
+        assert(false)
+    }
+}
+
 protocol VisiteableObject {
     func accept(visitor: Visitor)
 }
