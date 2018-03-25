@@ -27,26 +27,26 @@ class ActiveObject {
     private var callback: JobLogicCompletionCallbackType?
     private var jobs: [JobLogic]
     private var shouldStopExecutingJobs: Bool
-    private var dispatchQueue: dispatch_queue_t
+    private var dispatchQueue: DispatchQueue
     private var jobsInFlight: Int
     
     init(callback: JobLogicCompletionCallbackType?) {
         self.callback = callback
         jobs = []
         shouldStopExecutingJobs = false
-        dispatchQueue = dispatch_queue_create("queue.ldascalu", DISPATCH_QUEUE_SERIAL)
+        dispatchQueue = DispatchQueue(label: "queue.ldascalu", qos: DispatchQoS.background)
         jobsInFlight = 0
     }
     
     func invoke(jobLogic: JobLogic) {
-        jobsInFlight++
-        dispatch_async(dispatchQueue) {
+        jobsInFlight = jobsInFlight + 1
+        dispatchQueue.async {
             self.jobs.append(jobLogic)
         }
     }
     
     func start() {
-        dispatch_async(dispatchQueue) {
+        dispatchQueue.async {
             self.shouldStopExecutingJobs = false
             self.schedule()
         }
@@ -69,11 +69,11 @@ class ActiveObject {
                 highestPriorityJobLogic = jobLogic
                 maxJobIndex = jobIndex
             }
-            jobIndex++
+            jobIndex = jobIndex + 1
         }
-        jobsInFlight--
+        jobsInFlight = jobsInFlight - 1
         highestPriorityJobLogic.execute()
-        jobs.removeAtIndex(maxJobIndex)
+        jobs.remove(at: maxJobIndex)
         if let callback = self.callback {
             callback(highestPriorityJobLogic)
         }

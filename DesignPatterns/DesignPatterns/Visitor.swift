@@ -14,14 +14,12 @@ import Foundation
  elements on which it operates.
  */
 protocol Visitor {
-    func visit(number: Int)
-    func visit(string: String)
+    func visit(numberValue number: Int)
+    func visit(stringValue string: String)
 }
 
 class GenericVisitor<T: Comparable> {
-    func visit(key: T) {
-        assert(false)
-    }
+    func visit(key: T) { assert(false) }
 }
 
 protocol VisiteableObject {
@@ -36,7 +34,7 @@ class NumberObject : VisiteableObject {
     }
     
     func accept(visitor: Visitor) {
-        visitor.visit(number)
+        visitor.visit(numberValue: number)
     }
 }
 
@@ -48,22 +46,6 @@ class StringObject : VisiteableObject {
     }
     
     func accept(visitor: Visitor) {
-        visitor.visit(string)
-    }
-}
-
-class VisitorCenter {
-    private let objects: [VisiteableObject] = [
-        NumberObject(number: 1),
-        StringObject(string: "2"),
-        NumberObject(number: 3),
-        StringObject(string: "4"),
-        NumberObject(number: 5),
-    ]
-    
-    func visitObjects(visitor: Visitor) {
-        for object in objects {
-            object.accept(visitor)
-        }
+        visitor.visit(stringValue: string)
     }
 }

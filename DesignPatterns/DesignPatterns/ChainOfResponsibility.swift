@@ -13,14 +13,14 @@ import Foundation
  object a chance to handle the request. Chain the receiving objects and pass the
  request along the chain until an object handles it.
  */
-class Event : PrintableClass {
+class Event : CustomStringConvertible {
     var state: Int
     
     init(state: Int) {
         self.state = state
     }
     
-    func stringValue() -> String {
+    var description: String {
         return "Event \( state )"
     }
 }
@@ -48,7 +48,7 @@ class EventHandlerCenter : EventHandler {
         var currentEventHandler: EventHandlerChain? = eventHandlerChain
         while (currentEventHandler != nil) {
             if let currentEventHandler = currentEventHandler {
-                let result: Bool = currentEventHandler.handleEvent(event)
+                let result: Bool = currentEventHandler.handleEvent(event: event)
                 if (result) {
                     return true
                 }

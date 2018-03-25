@@ -19,20 +19,20 @@ protocol PrintStrategy {
 
 class LowercasePrintStrategy : PrintStrategy {
     func transform(string: String) -> String {
-        return string.lowercaseString
+        return string.lowercased()
     }
 }
 
 class UppercasePrintStrategy : PrintStrategy {
     func transform(string: String) -> String {
-        return string.uppercaseString
+        return string.uppercased()
     }
 }
 
-class Printer {
-    var printStrategy: PrintStrategy?
+struct Printer {
+    let printStrategy: PrintStrategy
     
-    func prepareForPrinting(string: String) -> String? {
-        return printStrategy?.transform(string)
+    func prepareForPrinting(string: String) -> String {
+        return printStrategy.transform(string: string)
     }
 }

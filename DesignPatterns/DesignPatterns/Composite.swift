@@ -9,12 +9,26 @@
 import Foundation
 
 /**
- Compose objects into tree structures to represent part-whole hierarchies.
+ Intent: Compose objects into tree structures to represent part-whole hierarchies.
  Composite lets clients treat individual objects and composition of objects
  uniformly.
  */
-class Composite<ItemType where ItemType : PrintableClass> : SequenceType, PrintableClass {
-    var value: ItemType?
+
+class Composite<ItemType> : CustomStringConvertible, Sequence where ItemType : CustomStringConvertible {
+    typealias Iterator = AnyIterator<Composite<ItemType>>
+
+    public let value: ItemType?
+
+    init(value: ItemType?) {
+        self.value = value
+    }
+
+    var description: String {
+        guard let value = value else {
+            fatalError("override in subclasses, if there is no value")
+        }
+        return value.description
+    }
 
     func add(composite: Composite<ItemType>) -> Bool {
         return false
@@ -24,74 +38,60 @@ class Composite<ItemType where ItemType : PrintableClass> : SequenceType, Printa
         return false
     }
     
-    func generate() -> AnyGenerator<Composite<ItemType>> {
-        return anyGenerator( {
+    func makeIterator() -> Iterator {
+        return AnyIterator( {
             return nil
         })
     }
-
-    func stringValue() -> String {
-        assert(false)
-    }
 }
 
-class RecursiveComposite<ItemType where ItemType : PrintableClass> : Composite<ItemType> {
-    var children: [Composite<ItemType>]
-
-    override init() {
-        children = []
-    }
-    
-    override func add(composite: Composite<ItemType>) -> Bool {
-        children.append(composite)
-        return true
-    }
-
-    override func stringValue() -> String {
-        return children.map({(let child) -> String in child.stringValue()}).joinWithSeparator(",")
-    }
-    
-    override func generate() -> AnyGenerator<Composite<ItemType>> {
-        var currentIndex = -1
-        var currentGenerator: AnyGenerator<Composite<ItemType>>?
-        return anyGenerator({
-            if (currentIndex >= self.children.count) {
-                return nil
-            }
-            let currentItem: Composite<ItemType>? = currentGenerator?.next()
-            if (currentItem == nil) {
-                currentIndex++
-                if (currentIndex < self.children.count) {
-                    currentGenerator = self.children[currentIndex].generate()
-                }
-            } else {
-                return currentItem
-            }
-            return currentGenerator?.next()
-        })
-    }
-}
-
-class LeafComposite<ItemType where ItemType : PrintableClass> : Composite<ItemType> {
-    convenience init(value: ItemType) {
-        self.init()
-        self.value = value
-    }
-    override func stringValue() -> String {
-        if let value = value {
-            return value.stringValue()
-        }
-        return ""
-    }
-    
-    override func generate() -> AnyGenerator<Composite<ItemType>> {
+class LeafComposite<ItemType> : Composite<ItemType> where ItemType : CustomStringConvertible {
+    override func makeIterator() -> Iterator {
         var wasCalled = false
-        return anyGenerator( {
+        return AnyIterator( {
             if (wasCalled) {
                 return nil
             }
             wasCalled = true
             return self
+        })
+    }
+}
+
+class RecursiveComposite<ItemType> : Composite<ItemType> where ItemType : CustomStringConvertible {
+    private var children: [Composite<ItemType>]
+
+    init() {
+        self.children = []
+        super.init(value: nil)
+    }
+
+    override func add(composite: Composite<ItemType>) -> Bool {
+        children.append(composite)
+        return true
+    }
+
+    override var description: String {
+        return children.map { $0.description }.joined(separator: ",")
+    }
+    
+    override func makeIterator() -> Iterator {
+        var currentIndex = -1
+        var currentGenerator: Iterator?
+        return AnyIterator({
+            if (currentIndex >= self.children.count) {
+                return nil
+            }
+            let currentItem: Composite<ItemType>? = currentGenerator?.next()
+            if (currentItem == nil) {
+                currentIndex = currentIndex + 1
+                if (currentIndex < self.children.count) {
+                    currentGenerator = self.children[currentIndex].makeIterator()
+                }
+            } else {
+                return currentItem
+            }
+            return currentGenerator?.next()
         })
     }
 }

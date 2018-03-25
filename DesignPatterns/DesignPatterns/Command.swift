@@ -8,7 +8,7 @@
 
 import Foundation
 
-typealias CompletionHandlerType = (result: Bool) -> Void
+typealias CompletionHandlerType = (_ result: Bool) -> Void
 
 /**
  Encapsulate a request as an object, thereby letting you parameterize clients
@@ -42,7 +42,7 @@ class CommandType : Command, Hashable {
 
     var hashValue : Int {
         get {
-            return unsafeAddressOf(self).hashValue
+            return Unmanaged.passUnretained(self).toOpaque().hashValue
         }
     }
 }
@@ -79,7 +79,7 @@ class CommandCenter {
     func execute(completion: CompletionHandlerType) -> Bool {
         var result = true
         for command in commands {
-            if (command.execute(completion)) {
+            if (command.execute(completion: completion)) {
                 successfullyExecuteCommands.insert(command)
             } else {
                 result = false
@@ -89,9 +89,9 @@ class CommandCenter {
     }
     
     func unexecute(completion: CompletionHandlerType) -> Bool {
-        for command in successfullyExecuteCommands.reverse() {
+        for command in successfullyExecuteCommands.reversed() {
             if (command.isUndoable()) {
-                if (!command.unexecute(completion)) {
+                if (!command.unexecute(completion: completion)) {
                     return false
                 }
             }

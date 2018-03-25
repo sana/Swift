@@ -13,44 +13,16 @@ import Foundation
  subclasses. Template Method lets subclasses redefine certain steps of an
  algorithm without changing the algorithm's structure.
  */
-protocol AbstractSentenseComposer {
+protocol AbstractSentenceComposer {
     func who() -> String
     func did() -> String
     func what() -> String
 }
 
-extension AbstractSentenseComposer {
+extension AbstractSentenceComposer {
     // this is the actual template method and it combines various abstract
     // method calls into a single step of an algorithm
-    func sentense() -> String {
+    func sentence() -> String {
         return "\(who()) \(did()) \(what())"
-    }
-}
-
-class DummySentenseComposer : AbstractSentenseComposer {
-    func who() -> String {
-        return "I"
-    }
-    
-    func did() -> String {
-        return "ate"
-    }
-    
-    func what() -> String {
-        return "a big burger"
-    }
-}
-
-class SmartSentenseComposer : AbstractSentenseComposer {
-    func who() -> String {
-        return "Someone"
-    }
-    
-    func did() -> String {
-        return "studied"
-    }
-    
-    func what() -> String {
-        return "the design patterns book"
     }
 }

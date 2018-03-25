@@ -14,7 +14,7 @@ import Foundation
  */
 
 class NumbersSequenceBuilder {
-    class func randomNumbers(factory: NumberFactory) -> [Number] {
-        return [factory("0.5"), factory("2.0"), factory("4.3"), factory("6")]
+    class func random(numbers: [String], forFactory: NumberFactory) -> [String] {
+        return numbers.map { "\( forFactory($0).doubleValue() )" }
     }
 }

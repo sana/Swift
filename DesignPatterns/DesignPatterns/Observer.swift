@@ -21,40 +21,38 @@ class SubjectOrObserver : Hashable {
 
     var hashValue : Int {
         get {
-            return unsafeAddressOf(self).hashValue
+            return Unmanaged.passUnretained(self).toOpaque().hashValue
         }
     }
 }
 
-class Subject : SubjectOrObserver, PrintableClass {
+class Subject : SubjectOrObserver {
     private let id: String
     init(id: String) {
         self.id = id
     }
     
     func attach(observer: SubjectOrObserver) {
-        ChangeManager.sharedInstance()?.register(self, observer: observer)
+        ChangeManager.sharedInstance()?.register(subject: self, observer: observer)
     }
 
     func detach(observer: SubjectOrObserver) {
-        ChangeManager.sharedInstance()?.unregister(self, observer: observer)
+        ChangeManager.sharedInstance()?.unregister(subject: self, observer: observer)
     }
     
     // notify all the observers that the subject has changed
     override func notify() {
-        ChangeManager.sharedInstance()?.notify(self)
+        ChangeManager.sharedInstance()?.notify(subject: self)
     }
 
-    override func update(subject: SubjectOrObserver) {
-        print("\( self ) got notified for \( subject )")
-    }
+    override func update(subject: SubjectOrObserver) { /* override */ }
     
-    func stringValue() -> String {
+    var description: String {
         return id
     }
 }
 
-class Observer : SubjectOrObserver, PrintableClass {
+class Observer : SubjectOrObserver {
     private let id: String
     init(id: String) {
         self.id = id
@@ -64,7 +62,7 @@ class Observer : SubjectOrObserver, PrintableClass {
         print("\( self ) got notified for \( subject )")
     }
 
-    func stringValue() -> String {
+    var description : String {
         return id
     }
 }
@@ -132,7 +130,7 @@ class ChangeManager {
             } while(foundNewObservers)
             
             for observer in observers {
-                observer.update(subject)
+                observer.update(subject: subject)
             }
         }
     }

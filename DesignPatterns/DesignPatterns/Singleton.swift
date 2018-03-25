@@ -8,49 +8,95 @@
 
 import Foundation
 
+class AbstractSingleton {
+    class func sharedInstance() -> AbstractSingleton? {
+        return nil
+    }
+}
+
 /**
- Ensure a class has a single instance, and provide a global point of access to
- it.
+ Intent: Ensure a class has a single instance, and provide a global point of access to it.
  */
-class Singleton : PrintableClass {
-    private var name: String
-    private init(name: String) {
+
+// MARK :- Thread safe Singleton
+
+class Singleton : AbstractSingleton, CustomStringConvertible {
+    private static let kSingletonName = "singleton"
+    private static var sharedInstanceImpl: Singleton?
+    private static let privateConcurrentQueue = DispatchQueue(label: "Singleton.Queue", attributes: .concurrent)
+
+    private let name: String
+
+    fileprivate init(name: String) {
         self.name = name
     }
-    
-    private static var sharedInstanceImpl: Singleton?
 
-    class func sharedInstance() -> Singleton? {
-        if (sharedInstanceImpl == nil) {
-            sharedInstanceImpl = Singleton(name: "singleton")
+    override class func sharedInstance() -> AbstractSingleton? {
+        privateConcurrentQueue.sync(flags: .barrier) {
+            if (sharedInstanceImpl == nil) {
+                sharedInstanceImpl = Singleton(name: Singleton.kSingletonName)
+            }
         }
         return sharedInstanceImpl
     }
     
-    func stringValue() -> String {
-        return "Singleton \(name)"
+    var description: String {
+        return "Singleton-\(name)"
     }
 }
 
-class Multiton : PrintableClass {
-    private static var multitonInstances: [String: Singleton]?
-    private init() { }
-    
-    class func getInstance(key: String) -> Singleton? {
-        if (multitonInstances == nil) {
-            multitonInstances = [String: Singleton]()
+// MARK :- Main thread Singleton
+
+class MainThreadSingleton : AbstractSingleton, CustomStringConvertible {
+    private static let kSingletonName = "main-thread-singleton"
+    private static var sharedInstanceImpl: Singleton?
+
+    private let name: String
+
+    fileprivate init(name: String) {
+        self.name = name
+    }
+
+    override class func sharedInstance() -> AbstractSingleton? {
+        guard Thread.isMainThread else {
+            return nil
         }
-        if var multitonInstances = multitonInstances {
+        if (sharedInstanceImpl == nil) {
+            sharedInstanceImpl = Singleton(name: MainThreadSingleton.kSingletonName)
+        }
+        return sharedInstanceImpl
+    }
+
+    var description: String {
+        return "MainThreadSingleton-\(name)"
+    }
+}
+
+// MARK :- Thread safe Multiton
+
+class Multiton {
+    private static let privateConcurrentQueue = DispatchQueue(label: "Multiton.Queue", attributes: .concurrent)
+    private static var multitonInstances = [String: Singleton]()
+
+    class func getInstance(key: String) -> Singleton? {
+        privateConcurrentQueue.sync(flags: .barrier) {
             if (multitonInstances[key] == nil) {
                 multitonInstances[key] = Singleton(name: key)
             }
-            Multiton.multitonInstances = multitonInstances
-            return multitonInstances[key]
         }
-        return nil
+        return multitonInstances[key]
     }
-    
-    func stringValue() -> String {
-        return "Singleton \(Multiton.multitonInstances)"
+}
+
+// MARK :- Main thread Multiton
+
+class MainThreadMultiton {
+    private static var multitonInstances = [String: Singleton]()
+
+    class func getInstance(key: String) -> Singleton? {
+        if (multitonInstances[key] == nil) {
+            multitonInstances[key] = Singleton(name: key)
+        }
+        return multitonInstances[key]
     }
 }

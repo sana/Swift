@@ -41,7 +41,7 @@ class SimpleGreet : MutableStateDelegate {
     private var delegate: StateDelegate!
     
     init() {
-        updateCurrentState(.Inactive)
+        updateCurrentState(state: .Inactive)
     }
     
     func updateCurrentState(state: State) {
@@ -68,7 +68,7 @@ class FancyGreet : MutableStateDelegate {
         delegates = [State: StateDelegate]()
         delegates[.Inactive] = InactiveStateDelegate()
         delegates[.Active] = ActiveStateDelegate()
-        updateCurrentState(.Inactive)
+        updateCurrentState(state: .Inactive)
     }
     
     func updateCurrentState(state: State) {

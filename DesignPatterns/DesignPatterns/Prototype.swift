@@ -9,51 +9,66 @@
 import Foundation
 
 /**
- Specify the kinds of objects to create using a prototyped instance, and create
- new objects by copying this prototype.
+ Intent: Specify the kinds of objects to create using a prototyped instance,
+ and create new objects by copying this prototype.
  */
-protocol Prototype : PrintableClass {
-    func clone() -> Prototype
+class Prototype : CustomStringConvertible {
+    func clone() -> Prototype {
+        return self
+    }
+
+    var description: String {
+        return "\( Unmanaged.passUnretained(self).toOpaque() )"
+    }
+}
+
+extension Prototype : Equatable {
+    static func == (lhs: Prototype, rhs: Prototype) -> Bool {
+        return lhs.description == rhs.description
+    }
 }
 
 class Room : Prototype {
-    private var name: String?
+    fileprivate static let kDefaultRoomName = "default-room-name"
+    private let name: String
     
-    init(name : String?) {
+    init(name : String) {
         self.name = name
     }
     
-    func clone() -> Prototype {
-        return Room(name: "default")
+    override func clone() -> Prototype {
+        return Room(name: Room.kDefaultRoomName)
     }
     
-    func stringValue() -> String {
-        return "Room \(name ?? "")"
+    override var description: String {
+        return "Room-\(name)"
     }
 }
 
 class Door : Prototype {
-    var room1: Room?
-    var room2: Room?
-    
-    init(room1: Room?, room2: Room?) {
-        self.room1 = room1
-        self.room2 = room2
+    fileprivate static let kDefaultFirstRoomName = "default-first-room-name"
+    fileprivate static let kDefaultSecondRoomName = "default-first-room-name"
+    let firstRoom: Room
+    let secondRoom: Room
+
+    init(firstRoom: Room, secondRoom: Room) {
+        self.firstRoom = firstRoom
+        self.secondRoom = secondRoom
     }
 
-    func clone() -> Prototype {
-        return Door(room1: Room(name: "default1"), room2: Room(name: "default2"))
+    override func clone() -> Prototype {
+        return Door(firstRoom: Room(name: Door.kDefaultFirstRoomName), secondRoom: Room(name: Door.kDefaultSecondRoomName))
     }
     
-    func stringValue() -> String {
-        return "Door [\((room1?.stringValue() ?? "none")), \((room2?.stringValue() ?? "none"))]"
+    override var description: String {
+        return "Door [\((firstRoom.description)), \((secondRoom.description))]"
     }
 }
 
 class PrototypeFactory {
     static let classMappings: [String: Prototype] = [
-        "Room": Room(name: "unnamed"),
-        "Door": Door(room1: nil, room2: nil),
+        "Room": Room(name: Room.kDefaultRoomName),
+        "Door": Door(firstRoom: Room(name: Door.kDefaultFirstRoomName), secondRoom: Room(name: Door.kDefaultSecondRoomName))
     ]
     
     class func createNewObject(className: String) -> Prototype? {

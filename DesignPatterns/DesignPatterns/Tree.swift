@@ -30,61 +30,78 @@ class Tree<T> {
 
 // Breadth-first search iterator for a binary tree, which is equivalent to a
 // level order traversal
-class BFSIterator<T> : SequenceType {
-    var root: Tree<T>
-    var queue: [Tree<T>]?
+class BFSIterator<T> : Sequence, IteratorProtocol {
+    let root: Tree<T>
+    var queue: [Tree<T>]
 
     init(root: Tree<T>) {
         self.root = root
+        self.queue = [root]
     }
     
-    func generate() -> AnyGenerator<T> {
-        self.queue = [root]
-        return anyGenerator {
-            if (self.queue?.isEmpty ?? true) {
-                return nil
-            }
-            if let currentNode = self.queue?.removeFirst() {
-                let result: Tree<T> = currentNode
-                if let left = currentNode.left {
-                    self.queue?.append(left)
-                }
-                if let right = currentNode.right {
-                    self.queue?.append(right)
-                }
-                return result.key
-            }
+    func next() -> T? {
+        guard !queue.isEmpty else {
             return nil
         }
+        let currentNode = queue.removeFirst()
+        let result: Tree<T> = currentNode
+        if let left = currentNode.left {
+            queue.append(left)
+        }
+        if let right = currentNode.right {
+            queue.append(right)
+        }
+        return result.key
     }
 }
 
 // Depth-first search iterator
-class DFSIterator<T> : SequenceType {
-    var root: Tree<T>
-    var stack: [Tree<T>]?
+class DFSIterator<T> : Sequence, IteratorProtocol {
+    let root: Tree<T>
+    var stack: [Tree<T>]
 
     init(root: Tree<T>) {
         self.root = root
+        self.stack = [root]
     }
 
-    func generate() -> AnyGenerator<T> {
-        self.stack = [root]
-        return anyGenerator {
-            if (self.stack?.isEmpty ?? true) {
-                return nil
-            }
-            if let currentNode = self.stack?.removeLast() {
-                let result: Tree<T> = currentNode
-                if let right = currentNode.right {
-                    self.stack?.append(right)
-                }
-                if let left = currentNode.left {
-                    self.stack?.append(left)
-                }
-                return result.key
-            }
+    func next() -> T? {
+        guard !self.stack.isEmpty else {
             return nil
         }
+        let currentNode = stack.removeLast()
+        let result: Tree<T> = currentNode
+        if let right = currentNode.right {
+            stack.append(right)
+        }
+        if let left = currentNode.left {
+            stack.append(left)
+        }
+        return result.key
+    }
+}
+
+// Level order traversal using a queue
+class LevelOrderIterator<T> : Sequence, IteratorProtocol {
+    let root: Tree<T>
+    var queue: [Tree<T>]
+
+    init(root: Tree<T>) {
+        self.root = root
+        self.queue = [root]
+    }
+
+    func next() -> T? {
+        guard !queue.isEmpty else {
+            return nil
+        }
+        let node = queue.removeFirst()
+        if let leftNode = node.left {
+            queue.append(leftNode)
+        }
+        if let rightNode = node.right {
+            queue.append(rightNode)
+        }
+        return node.key
     }
 }
