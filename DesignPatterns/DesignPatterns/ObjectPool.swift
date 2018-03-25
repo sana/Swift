@@ -13,7 +13,7 @@ import Foundation
  clients. The objects are allocated when the pool is created, not for every
  object acquisition.
  */
-class Object : Hashable, PrintableClass {
+class Object : Hashable, CustomStringConvertible {
     private let id: String
     init(id: String) {
         self.id = id
@@ -25,8 +25,8 @@ class Object : Hashable, PrintableClass {
         }
     }
     
-    func stringValue() -> String {
-        return "\( NSStringFromClass(self.dynamicType) ) \( id )"
+    var description: String {
+        return "\( NSStringFromClass(type(of: self)) ) \( id )"
     }
 }
 

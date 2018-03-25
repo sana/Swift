@@ -19,11 +19,11 @@ import Foundation
  */
 typealias FutureCompletionCallbackType = (FutureResult) -> Void
 
-class FutureResult { }
+protocol FutureResult { }
 
 class Future : Hashable {
-    var completionCallback: FutureCompletionCallbackType?
-    private var completed: Bool
+    let completionCallback: FutureCompletionCallbackType?
+    fileprivate var completed: Bool
     
     init(completionCallback: FutureCompletionCallbackType?) {
         self.completionCallback = completionCallback
@@ -40,7 +40,7 @@ class Future : Hashable {
 
     var hashValue : Int {
         get {
-            return unsafeAddressOf(self).hashValue
+            return UnsafeMutableRawPointer(Unmanaged.passUnretained(self).toOpaque()).hashValue
         }
     }
 
@@ -70,26 +70,20 @@ protocol FutureManager {
 }
 
 class SimpleFutureManager : FutureManager {
-    var debug: Bool
     private var granularity: UInt32
     private var allFutures: [UInt32: Set<Future>]
     
     convenience init() {
-        self.init(granularity: 1, debug: false)
+        self.init(granularity: 1)
     }
-    
-    convenience init(debug: Bool) {
-        self.init(granularity: 1, debug: debug)
-    }
-    
-    init(granularity: UInt32, debug: Bool) {
+
+    init(granularity: UInt32) {
         allFutures = [UInt32: Set<Future>]()
         self.granularity = granularity
-        self.debug = debug
     }
     
     func submit(future: Future) -> Bool {
-        return submit(future, queue: QOS_CLASS_BACKGROUND)
+        return submit(future: future, queue: QOS_CLASS_BACKGROUND)
     }
     
     func submit(future: Future, queue: qos_class_t) -> Bool {
@@ -108,8 +102,11 @@ class SimpleFutureManager : FutureManager {
             future.completed = false
             self.allFutures[queue.rawValue] = futures
 
-            dispatch_async(dispatch_get_global_queue(Int(queue.rawValue), 0)) {
-                future.accomplish()
+            guard let qos = DispatchQoS.QoSClass(rawValue: queue) else {
+                return false
+            }
+            DispatchQueue.global(qos: qos).async {
+                _ = future.accomplish()
                 future.completed = true
             }
             return true
@@ -118,20 +115,17 @@ class SimpleFutureManager : FutureManager {
     }
     
     func waitForFuturesToComplete(queue: qos_class_t) -> Bool {
-        var stepsCount: Int = 0
         var shouldWaitMore: Bool
         let futures : Set<Future>? = allFutures[queue.rawValue]
         if let futures  = futures {
             repeat {
                 shouldWaitMore = false
-                _print("waitForAllFutureToComplete \( queue.rawValue ) checking out the submitted futures \( ++stepsCount )")
                 for future in futures {
                     if !future.completed {
                         shouldWaitMore = true
                     }
                 }
                 sleep(granularity)
-                _print("waitForAllFutureToComplete \( queue.rawValue ) still waits for future to complete")
             } while (shouldWaitMore)
             return true
         }
@@ -141,16 +135,10 @@ class SimpleFutureManager : FutureManager {
     func waitForAllFutureToComplete() -> Bool {
         var result: Bool = true
         for queue in allFutures.keys {
-            if (!waitForFuturesToComplete(qos_class_t(queue))) {
+            if (!waitForFuturesToComplete(queue: qos_class_t(queue))) {
                 result = false
             }
         }
         return result
-    }
-    
-    private func _print(message: String) {
-        if (debug) {
-            print(message)
-        }
     }
 }

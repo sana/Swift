@@ -13,10 +13,10 @@ func ==<T>(lhs: Tree<T>, rhs: Tree<T>) -> Bool {
 }
 
 class BinarySearchTree<T: Comparable> {
-    var tree: Tree<T>
+    let tree: Tree<T>
     
     init(initialValue: T) {
-        tree = Tree.init(key: initialValue)
+        tree = Tree(key: initialValue)
     }
 
     func value() -> T {
@@ -36,20 +36,20 @@ class BinarySearchTree<T: Comparable> {
     }
     
     func insert(value: T) -> Bool {
-        return _insert(value, currentNode: self.tree)
+        return insert(value: value, currentNode: self.tree)
     }
     
     func find(value: T) -> Bool {
-        return _find(value, currentNode: self.tree)
+        return find(value: value, currentNode: self.tree)
     }
     
     func delete(value: T) -> Bool {
-        return _delete(value, previousNode: nil, currentNode: self.tree)
+        return delete(value: value, previousNode: nil, currentNode: self.tree)
     }
     
-    // Private methods
+    // MARK :- Private methods
     
-    func _insert(value: T, currentNode: Tree<T>) -> Bool {
+    private func insert(value: T, currentNode: Tree<T>) -> Bool {
         let insertLeft = currentNode.key > value
         let insertRight = currentNode.key < value
         if (!insertLeft && !insertRight) {
@@ -58,31 +58,31 @@ class BinarySearchTree<T: Comparable> {
         }
         if (currentNode.isLeaf()) {
             if (insertLeft) {
-                currentNode.left = Tree.init(key: value)
+                currentNode.left = Tree(key: value)
             } else {
-                currentNode.right = Tree.init(key: value)
+                currentNode.right = Tree(key: value)
             }
             return true
         } else {
             if (insertLeft) {
                 if let left = currentNode.left {
-                    return _insert(value, currentNode: left);
+                    return insert(value: value, currentNode: left)
                 }
             } else {
                 if let right = currentNode.right {
-                    return _insert(value, currentNode: right);
+                    return insert(value: value, currentNode: right)
                 }
             }
         }
         return false
     }
 
-    func _find(value: T, currentNode: Tree<T>?) -> Bool {
+    private func find(value: T, currentNode: Tree<T>?) -> Bool {
         if let currentNode = currentNode {
             if (value < currentNode.key) {
-                return _find(value, currentNode: currentNode.left)
+                return find(value: value, currentNode: currentNode.left)
             } else if (value > currentNode.key) {
-                return _find(value, currentNode: currentNode.right)
+                return find(value: value, currentNode: currentNode.right)
             }
             return true
         } else {
@@ -90,8 +90,8 @@ class BinarySearchTree<T: Comparable> {
         }
     }
     
-    func _delete(value: T, previousNode: Tree<T>?, currentNode: Tree<T>?) -> Bool {
-        // previousNode is parent of the currentNode
+    private func delete(value: T, previousNode: Tree<T>?, currentNode: Tree<T>?) -> Bool {
+        // `previousNode` is the parent of the `currentNode`
         if let currentNode = currentNode {
             if (currentNode.key == value) {
                 let mergeLeft = currentNode.left != nil
@@ -125,9 +125,9 @@ class BinarySearchTree<T: Comparable> {
                 }
                 return true
             } else if (value < currentNode.key) {
-                return _delete(value, previousNode: currentNode, currentNode: currentNode.left)
+                return delete(value: value, previousNode: currentNode, currentNode: currentNode.left)
             } else {
-                return _delete(value, previousNode: currentNode, currentNode: currentNode.right)
+                return delete(value: value, previousNode: currentNode, currentNode: currentNode.right)
             }
         }
         return false
@@ -144,11 +144,11 @@ class TreeTraversal<T: Comparable> {
     }
     
     func traverse() {
-        return _traverse(root.tree)
+        return traverse(tree: root.tree)
     }
 
-    func _traverse(tree: Tree<T>?) {
-        assert(false)
+    fileprivate func traverse(tree: Tree<T>?) {
+        /* Override in the subclass */
     }
 }
 
@@ -157,12 +157,13 @@ class InorderTraversal<T: Comparable>: TreeTraversal<T> {
         super.init(root: root, visitor: visitor)
     }
     
-    override func _traverse(tree: Tree<T>?) {
-        if let tree = tree {
-            _traverse(tree.left)
-            print(tree.key)
-            _traverse(tree.right)
+    override func traverse(tree: Tree<T>?) {
+        guard let node = tree else {
+            return
         }
+        traverse(tree: node.left)
+        visitor.visit(key: node.key)
+        traverse(tree: node.right)
     }
 }
 
@@ -171,12 +172,13 @@ class PreorderTraversal<T: Comparable>: TreeTraversal<T> {
         super.init(root: root, visitor: visitor)
     }
     
-    override func _traverse(tree: Tree<T>?) {
-        if let tree = tree {
-            print(tree.key)
-            _traverse(tree.left)
-            _traverse(tree.right)
+    override func traverse(tree: Tree<T>?) {
+        guard let node = tree else {
+            return
         }
+        visitor.visit(key: node.key)
+        traverse(tree: node.left)
+        traverse(tree: node.right)
     }
 }
 
@@ -185,159 +187,106 @@ class PostorderTraversal<T: Comparable>: TreeTraversal<T> {
         super.init(root: root, visitor: visitor)
     }
 
-    override func _traverse(tree: Tree<T>?) {
-        if let tree = tree {
-            _traverse(tree.left)
-            _traverse(tree.right)
-            visitor.visit(tree.key)
+    override func traverse(tree: Tree<T>?) {
+        guard let node = tree else {
+            return
         }
+        traverse(tree: node.left)
+        traverse(tree: node.right)
+        visitor.visit(key: node.key)
     }
 }
 
-class InorderIterativeTraversal<T: Comparable>: SequenceType {
+class InorderIterativeTraversal<T: Comparable>: Sequence, IteratorProtocol {
     let root: BinarySearchTree<T>
-    let visitor: GenericVisitor<T>
     var stack = [Tree<T>]()
     var current: Tree<T>?
 
-    init(root: BinarySearchTree<T>, visitor: GenericVisitor<T>) {
+    init(root: BinarySearchTree<T>) {
         self.root = root
-        self.visitor = visitor
+        self.stack = [Tree<T>]()
+        self.current = root.treeNode()
     }
     
-    func generate() -> AnyGenerator<T> {
-        stack = [Tree<T>]()
-        current = root.treeNode()
-        return anyGenerator {
-            while (self.current != nil) {
-                self.stack.append(self.current!)
-                self.current = self.current?.left
-            }
-
-            if (self.current == nil && !self.stack.isEmpty) {
-                let node = self.stack.popLast()
-                self.current = node?.right
-                return node?.key
-            }
-            return nil
+    func next() -> T? {
+        while let node = current {
+            stack.append(node)
+            current = node.left
         }
+
+        if
+            current == nil,
+            !stack.isEmpty,
+            let node = stack.popLast()
+        {
+            current = node.right
+            return node.key
+        }
+        return nil
     }
 }
 
-class PreorderIterativeTraversal<T: Comparable>: SequenceType {
+class PreorderIterativeTraversal<T: Comparable>: Sequence, IteratorProtocol {
     let root: BinarySearchTree<T>
-    let visitor: GenericVisitor<T>
     var stack = [Tree<T>]()
 
-    init(root: BinarySearchTree<T>, visitor: GenericVisitor<T>) {
+    init(root: BinarySearchTree<T>) {
         self.root = root
-        self.visitor = visitor
+        self.stack = [Tree<T>]()
+        self.stack.append(root.treeNode())
     }
     
-    func generate() -> AnyGenerator<T> {
-        stack = [Tree<T>]()
-        stack.append(root.treeNode())
-        return anyGenerator {
-            if (self.stack.isEmpty) {
-                return nil
-            }
-            
-            let current = self.stack.popLast()
-            if let rightNode = current?.right {
-                self.stack.append(rightNode)
-            }
-            if let leftNode = current?.left {
-                self.stack.append(leftNode)
-            }
-            return current?.key
-        }
-    }
-}
-
-class ReversePostorderIterativeTraversal<T: Comparable>: SequenceType {
-    let root: BinarySearchTree<T>
-    let visitor: GenericVisitor<T>
-    var stack = [Tree<T>]()
-    
-    init(root: BinarySearchTree<T>, visitor: GenericVisitor<T>) {
-        self.root = root
-        self.visitor = visitor
-    }
-    
-    func generate() -> AnyGenerator<T> {
-        stack = [Tree<T>]()
-        stack.append(root.treeNode())
-        return anyGenerator {
-            if let lastNode = self.stack.popLast() {
-                if let leftNode = lastNode.left {
-                    self.stack.append(leftNode)
-                }
-                if let rightNode = lastNode.right {
-                    self.stack.append(rightNode)
-                }
-                return lastNode.key
-            }
+    func next() -> T? {
+        guard
+            !stack.isEmpty,
+            let current = stack.popLast()
+        else {
             return nil
         }
+
+        if let rightNode = current.right {
+            stack.append(rightNode)
+        }
+        if let leftNode = current.left {
+            stack.append(leftNode)
+        }
+
+        return current.key
     }
 }
 
 /**
- 1.1 Create an empty stack
- 2.1 Do following while root is not NULL
-    a) Push root's right child and then root to stack.
-    b) Set root as root's left child.
- 2.2 Pop an item from stack and set it as root.
-    a) If the popped item has a right child and the right child
-    is at top of stack, then remove the right child from stack,
-    push the root back and set root as root's right child.
-    b) Else print root's data and set root as NULL.
- 2.3 Repeat steps 2.1 and 2.2 while stack is not empty.
+ 1. Push root to first stack.
+ 2. Loop while first stack is not empty
+ 2.1 Pop a node from first stack and push it to second stack
+ 2.2 Push left and right children of the popped node to first stack
+ 3. Print contents of second stack
  */
-class PostorderIterativeTraversal<T: Comparable>: SequenceType {
+class PostorderIterativeTraversal<T: Comparable>: Sequence, IteratorProtocol {
     let root: BinarySearchTree<T>
-    let visitor: GenericVisitor<T>
-    var stack = [Tree<T>]()
-    var rootNode: Tree<T>?
-    
-    init(root: BinarySearchTree<T>, visitor: GenericVisitor<T>) {
+    var firstStack: [Tree<T>]
+    var secondStack: [Tree<T>]
+
+    init(root: BinarySearchTree<T>) {
         self.root = root
-        self.visitor = visitor
+        firstStack = [Tree<T>]()
+        secondStack = [Tree<T>]()
+        firstStack.append(root.treeNode())
     }
     
-    func generate() -> AnyGenerator<T> {
-        stack = [Tree<T>]()
-        rootNode = root.treeNode()
-        return anyGenerator {
-            while self.rootNode != nil {
-                if let rightNode = self.rootNode!.right {
-                    self.stack.append(rightNode)
-                }
-                self.stack.append(self.rootNode!)
-                self.rootNode = self.rootNode?.left
+    func next() -> T? {
+        while !firstStack.isEmpty {
+            guard let node = firstStack.popLast() else {
+                break
             }
-            if (!self.stack.isEmpty) {
-                self.rootNode = self.stack.popLast()
-                if let rightNode = self.rootNode!.right {
-                    if (!self.stack.isEmpty && self.stack.last! == rightNode) {
-                        self.stack.popLast()
-                        self.stack.append(self.rootNode!)
-                        self.rootNode = self.rootNode?.right
-                    } else {
-                        if let node = self.rootNode {
-                            return node.key
-                        }
-                        self.rootNode = nil
-                    }
-                } else {
-                    if let node = self.rootNode {
-                        return node.key
-                    }
-                    self.rootNode = nil
-                }
+            secondStack.append(node)
+            if let leftNode = node.left {
+                firstStack.append(leftNode)
             }
-
-            return nil
+            if let rightNode = node.right {
+                firstStack.append(rightNode)
+            }
         }
+        return secondStack.popLast()?.key
     }
 }

@@ -1,0 +1,14 @@
+1. Implement a cache that support TTL
+2. Read about various cache implementations, including distributed caches
+3. Implement the reader-writer problem and follow up on fairness
+
+Cache implementations
+
+Graph algorithms
+
+
+/*
+3. Interpreter
+a) Regex
+b) boolean expressions evaluation
+*/

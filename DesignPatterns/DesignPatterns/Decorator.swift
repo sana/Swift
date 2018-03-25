@@ -14,12 +14,12 @@ import Foundation
  functionality.
  */
 protocol Coffee {
-    func getIngredients() -> String
+    func ingredients() -> [String]
 }
 
 class SimpleCoffee : Coffee {
-    func getIngredients() -> String {
-        return "Coffee"
+    func ingredients() -> [String] {
+        return ["coffee"]
     }
 }
 
@@ -30,23 +30,23 @@ class CoffeeDecorator : Coffee {
         self.decoratedCoffee = decoratedCoffee
     }
     
-    func getIngredients() -> String {
-        return decoratedCoffee.getIngredients() + (self.getExtraIngredients()?.joinWithSeparator(",") ?? "")
+    func ingredients() -> [String] {
+        return decoratedCoffee.ingredients() + self.extraIngredients()
     }
     
-    func getExtraIngredients() -> [String]? {
-        return nil
+    func extraIngredients() -> [String] {
+        return []
     }
 }
 
 class MilkCoffee : CoffeeDecorator {
-    override func getExtraIngredients() -> [String]? {
-        return ["Milk"]
+    override func extraIngredients() -> [String] {
+        return ["milk"]
     }
 }
 
 class IcedMocchaCoffee : CoffeeDecorator {
-    override func getExtraIngredients() -> [String]? {
-        return ["Milk", "Ice", "Caramel"]
+    override func extraIngredients() -> [String] {
+        return ["milk", "ice", "caramel"]
     }
 }

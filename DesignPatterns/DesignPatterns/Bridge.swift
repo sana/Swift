@@ -9,9 +9,12 @@
 import Foundation
 
 /**
- Decouple an abstraction from its implementation so that the two can vary
+ Intent: Decouple an abstraction from its implementation so that the two can vary
  independently.
  */
+
+// MARK :- Protocols
+
 protocol SourceProtocol {
     func name() -> String
 }
@@ -19,6 +22,8 @@ protocol SourceProtocol {
 protocol TargetProtocol {
     func tokens(string: String) -> [String]
 }
+
+// MARK :- Protocol implementations
 
 class SourceClass : SourceProtocol {
     func name() -> String {
@@ -28,23 +33,18 @@ class SourceClass : SourceProtocol {
 
 class TargetClass : TargetProtocol {
     func tokens(string: String) -> [String] {
-        return string.componentsSeparatedByString(" ")
+        return string.split(separator: " ").map(String.init)
     }
 }
 
 class BridgeClass {
-    var source: SourceProtocol
-    var target: TargetProtocol?
-    
+    let source: SourceProtocol
+
     init(source: SourceProtocol) {
         self.source = source
     }
     
-    func printTokens() {
-        if let target = target {
-            for token in target.tokens(source.name()) {
-                print(token)
-            }
-        }
+    func tokens(forTarget target: TargetProtocol) -> [String] {
+        return target.tokens(string: source.name())
     }
 }

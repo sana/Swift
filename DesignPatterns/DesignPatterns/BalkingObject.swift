@@ -31,31 +31,32 @@ import Foundation
  }
  */
 
-protocol JobLogic : PrintableClass {
+protocol JobLogic : CustomStringConvertible {
     func execute() -> Void
     func priority() -> Int
 }
 
 class Job {
-    var currentExecutingJobLogic: JobLogic?
+    private let serialQueue = DispatchQueue(label: "BalkingObject.serialQueue")
+    private var currentExecutingJobLogic: JobLogic?
     private var running: Bool
     
     init() {
         running = false
     }
     
-    private func _execute(jobLogic: JobLogic) {
+    private func privateExecute(jobLogic: JobLogic) {
         if (running) {
-            return;
+            return
         } else {
             running = true
         }
         currentExecutingJobLogic = jobLogic
         jobLogic.execute()
-        reset()
+        privateReset()
     }
     
-    private func _reset() {
+    private func privateReset() {
         running = false
         currentExecutingJobLogic = nil
     }
@@ -68,14 +69,14 @@ class Job {
      to implement sync(this).
      */
     func execute(jobLogic: JobLogic) {
-        dispatch_async(dispatch_get_global_queue(Int(QOS_CLASS_BACKGROUND.rawValue), 0)) {
-            self._execute(jobLogic)
+        serialQueue.async() {
+            self.privateExecute(jobLogic: jobLogic)
         }
     }
     
     func reset() {
-        dispatch_async(dispatch_get_global_queue(Int(QOS_CLASS_BACKGROUND.rawValue), 0)) {
-            self._reset()
+        serialQueue.async() {
+            self.privateReset()
         }
     }
 }

@@ -12,44 +12,35 @@ import Foundation
  Provide a way to access the elements of an aggregate object sequentially
  without exposing its underlying implementation.
  */
-class IterableListOfLists<T> : SequenceType
+
+class IterableListOfLists<T> : Sequence, IteratorProtocol
 {
     var currentArrayIndex: Int
     var currentItemIndex: Int
     let data: [[T?]]
-    typealias Generator = AnyGenerator<T>
-    
+
     init(data: [[T?]]) {
         self.data = data
         self.currentArrayIndex = 0
         self.currentItemIndex = 0
     }
     
-    func generate() -> AnyGenerator<T> {
-        return anyGenerator {
-            repeat {
-                if (self.currentArrayIndex >= self.data.count) {
-                    return nil
+    func next() -> T? {
+        repeat {
+            if (currentArrayIndex >= data.count) {
+                return nil
+            }
+            let currentArray = data[currentArrayIndex]
+            if (currentItemIndex >= currentArray.count) {
+                currentItemIndex = 0
+                currentArrayIndex = currentArrayIndex + 1
+            } else {
+                let currentItem: T? = currentArray[currentItemIndex]
+                currentItemIndex = currentItemIndex + 1
+                if let currentItem = currentItem {
+                    return currentItem
                 }
-                let currentArray = self.data[self.currentArrayIndex]
-                if (self.currentItemIndex >= currentArray.count) {
-                    self.currentItemIndex = 0
-                    self.currentArrayIndex++
-                } else {
-                    let currentItem: T? = currentArray[self.currentItemIndex]
-                    self.currentItemIndex++
-                    if let currentItem = currentItem {
-                        return currentItem
-                    }
-                }
-            } while(true)
-        }
+            }
+        } while(true)
     }
 }
-
-/*
-4. Iterator
-b) DFS/BFS
-c) Inorder/preorder/postorder
-d) Level traversal for any tree
-*/

@@ -9,25 +9,30 @@
 import Foundation
 
 /**
- Convert the interface of a class into another interface clients expect.
+ Intent: Convert the interface of a class into another interface clients expect.
  Adapter lets classes work together that couldn't otherwise because of
  incompatible interfaces.
  */
+
+// MARK :- Stack
+
 protocol Stack {
-    typealias ItemType
+    associatedtype ItemType
     func push(key: ItemType)
     func pop() -> ItemType
     func isEmpty() -> Bool
 }
 
-class ArrayStack<T> : NSArray, Stack {
+// MARK :- Array Stack
+
+class ArrayStack<T> : Stack {
     typealias ItemType = T
-    var items = [T]()
+    private var items: [T]
     
-    override init() {
-        super.init()
+    init() {
+        items = [T]()
     }
-    
+
     func push(key: T) {
         items.append(key)
     }

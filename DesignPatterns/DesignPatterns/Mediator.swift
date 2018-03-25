@@ -13,63 +13,74 @@ import Foundation
  promotes loose coupling by keeping objects from referring each to other
  explictly, and it lets you vary their interaction independently.
  */
-class Client : Hashable, PrintableClass {
-    private let id: String
-    private var mediator: Mediator
-    init(id: String, mediator: Mediator) {
-        self.id = id
-        self.mediator = mediator
-    }
-    
-    func mutate() {
-        mediator.clientHasChanged(self)
-    }
-    
-    func notify(mediator: Mediator) {
-        print("Client \( self ) is notified by mediator \( mediator )")
-    }
-    
-    var hashValue : Int {
-        get {
-            return unsafeAddressOf(self).hashValue
-        }
-    }
 
-    func stringValue() -> String {
+protocol ClientNotifier {
+}
+
+protocol Client : Hashable, CustomStringConvertible {
+    var id: String { get }
+    var mediator: Mediator { get }
+
+    func mutate()
+    func notify(mediator: Mediator)
+}
+
+extension Client {
+    var description: String {
         return "#\( self.id )"
     }
 }
 
-func ==(left: Client, right: Client) -> Bool {
-    return left.hashValue == right.hashValue
+class AnyClient: Client {
+    let id: String
+    var mediator: Mediator
+
+    init(id: String, mediator: Mediator) {
+        self.id = id
+        self.mediator = mediator
+    }
+
+    func mutate() {
+        mediator.clientHasChanged(client: self)
+    }
+
+    func notify(mediator: Mediator) { /* override */ }
+
+    var hashValue: Int {
+        return id.hashValue
+    }
+
+    static func == (lhs: AnyClient, rhs: AnyClient) -> Bool {
+        return lhs.id == rhs.id
+    }
 }
 
-class Mediator : PrintableClass {
+class Mediator : CustomStringConvertible {
     private let id: String
-    private var clients: Set<Client>
+    private var clients: Set<AnyClient>
     
     init(id: String) {
         self.id = id
-        clients = Set<Client>()
+        clients = Set<AnyClient>()
     }
     
-    func addClient(client: Client) {
+    func addClient(client: AnyClient) {
         clients.insert(client)
     }
     
-    func removeClient(client: Client) {
+    func removeClient(client: AnyClient) {
         clients.remove(client)
     }
     
-    func clientHasChanged(client: Client) {
+    func clientHasChanged(client: AnyClient) {
         for it in clients {
             if it != client {
-                it.notify(self)
+                it.notify(mediator: self)
             }
         }
     }
     
-    func stringValue() -> String {
+    var description: String {
         return id
     }
 }

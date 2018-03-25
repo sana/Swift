@@ -10,31 +10,35 @@ import Foundation
 
 /**
  Intent: define an interface for creating an object, but let subclasses decide
- which class to instantiate. Factory Method lets a class defer instantiation to
- subclasses.
+ which class to instantiate. The Factory Method lets a class defer instantiation
+ to subclasses.
  */
 
-protocol Currency : PrintableClass { }
-protocol Country : PrintableClass {
+protocol Currency : CustomStringConvertible { }
+
+protocol Country {
     func currency() -> Currency
 }
-extension Country {
-    func stringValue() -> String {
-        return currency().stringValue()
-    }
+
+protocol CountryFactory {
+    func createRandomCountry() -> Country
 }
 
+// MARK :- Currency
+
 class Euro : Currency {
-    func stringValue() -> String {
+    var description: String {
         return "euro"
     }
 }
 
 class USDollar : Currency {
-    func stringValue() -> String {
+    var description: String {
         return "usd"
     }
 }
+
+// MARK :- Country
 
 class Romania : Country {
     func currency() -> Currency {
@@ -48,9 +52,7 @@ class US : Country {
     }
 }
 
-protocol CountryFactory {
-    func createRandomCountry() -> Country
-}
+// MARK :- CountryFactory
 
 class EuroCountryFactory : CountryFactory {
     func createRandomCountry() -> Country {

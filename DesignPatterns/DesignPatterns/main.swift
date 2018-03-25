@@ -40,7 +40,7 @@ let testClasses: [SampleTest.Type] = [
 //    ActiveObjectTests.self,
 //    IteratorTests.self,
 //    TreeTests.self,
-    BinarySearchTreeTests.self, // FIXME: implement the iterative options using iterator
+//    BinarySearchTreeTests.self, // FIXME: implement the iterative options using iterator
     //GraphTests.self // FIXME: some graph algorithms
 ]
 

@@ -8,7 +8,7 @@
 
 import Foundation
 
-let gIngredientsInfo: [String: Int] = [
+let globalIngredientsInfo: [String: Int] = [
     "coffee": 10,
     "milk": 100,
     "chocolate": 200,
@@ -16,7 +16,7 @@ let gIngredientsInfo: [String: Int] = [
     "butter" : 300
 ]
 
-let gMenuItemsIngredients: [String: [String]] = [
+let globalMenuItemsIngredients: [String: [String]] = [
     "plain coffee": ["coffee"],
     "simple coffee": ["coffee", "sugar"],
     "choco coffee": ["coffee", "sugar", "chocolate"],
@@ -27,88 +27,71 @@ let gMenuItemsIngredients: [String: [String]] = [
 /**
  Use sharing to support large numbers of fine-grained objects efficiently.
  */
-class Ingredient : PrintableClass {
+class Ingredient {
     static var cachedIngredients: [String: Ingredient] = [String: Ingredient]()
     private let name: String
     private let calories: Int?
     
     private init(name: String) {
         self.name = name
-        self.calories = gIngredientsInfo[name]
+        self.calories = globalIngredientsInfo[name]
     }
     
-    class func calories(name: String) -> Int? {
+    static func calories(forIngredientName name: String) -> Int? {
         let ingredient: Ingredient? = Ingredient.cachedIngredients[name]
         if (ingredient == nil) {
-            let ingredient: Ingredient = Ingredient.init(name: name)
+            let ingredient: Ingredient = Ingredient(name: name)
             Ingredient.cachedIngredients[name] = ingredient
         }
         return Ingredient.cachedIngredients[name]?.calories
     }
-
-    func stringValue() -> String {
-        return "\( name ), \( calories )"
-    }
 }
 
-class MenuItem : PrintableClass {
+class MenuItem {
     static var cachedMenuItems: [String: MenuItem] = [String: MenuItem]()
     private var name: String
     private var calories: Int
     
     private init(name: String) {
         self.name = name
-        calories = 0
-        calories = _computeCalories()
+        self.calories = MenuItem.computeCalories(forMenuItemName: name)
     }
     
-    private func _computeCalories() -> Int {
+    private static func computeCalories(forMenuItemName name: String) -> Int {
         var result: Int = 0
-        let ingredients: [String]? = gMenuItemsIngredients[name]
+        let ingredients: [String]? = globalMenuItemsIngredients[name]
         if let ingredients = ingredients {
             for ingredient in ingredients {
-                result += Ingredient.calories(ingredient) ?? 0
+                result += Ingredient.calories(forIngredientName: ingredient) ?? 0
             }
         }
         return result
     }
     
-    class func calories(name: String) -> Int? {
+    static func calories(forMenuItemName name: String) -> Int? {
         let menuItem: MenuItem? = MenuItem.cachedMenuItems[name]
         if (menuItem == nil) {
-            let menuItem: MenuItem = MenuItem.init(name: name)
+            let menuItem: MenuItem = MenuItem(name: name)
             MenuItem.cachedMenuItems[name] = menuItem
         }
         return MenuItem.cachedMenuItems[name]?.calories
     }
-    
-    func stringValue() -> String {
-        return "\( name ), \( calories )"
-    }
 }
 
 class Order {
-    var items: [String]?
-    var table: String
+    private var items: [String]
+    private let table: String
     
     init(table: String) {
+        self.items = []
         self.table = table
     }
     
     func addItem(itemName: String) {
-        if (items == nil) {
-            items = []
-        }
-        items?.append(itemName)
+        items.append(itemName)
     }
     
     func calories() -> Int {
-        var result: Int = 0
-        if let items = items {
-            for menuItem in items {
-                result += MenuItem.calories(menuItem) ?? 0
-            }
-        }
-        return result
+        return items.compactMap { MenuItem.calories(forMenuItemName: $0) }.reduce(0, +)
     }
 }
