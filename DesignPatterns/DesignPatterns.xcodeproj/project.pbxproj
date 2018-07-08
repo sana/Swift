@@ -40,6 +40,9 @@
 		3226FB7320871D4F0007CEF3 /* FlyweightTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3226FB7220871D4F0007CEF3 /* FlyweightTests.swift */; };
 		3226FB7420871D4F0007CEF3 /* FlyweightTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3226FB7220871D4F0007CEF3 /* FlyweightTests.swift */; };
 		3226FB7520871DED0007CEF3 /* Flyweight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 326F75B51C2A4FA4001CF09D /* Flyweight.swift */; };
+		3229704D20F1D17B00F7D873 /* LRUCacheImplementation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3229704C20F1D17B00F7D873 /* LRUCacheImplementation.swift */; };
+		3229704E20F1D17B00F7D873 /* LRUCacheImplementation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3229704C20F1D17B00F7D873 /* LRUCacheImplementation.swift */; };
+		3229705120F1E8F100F7D873 /* LRUCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3229704F20F1E8F100F7D873 /* LRUCacheTests.swift */; };
 		324354BD20EB531B0027EBE4 /* ChainOfResponsibilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324354BC20EB531B0027EBE4 /* ChainOfResponsibilityTests.swift */; };
 		324354BE20EB531F0027EBE4 /* ChainOfResponsibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 326F75C11C2AAA9B001CF09D /* ChainOfResponsibility.swift */; };
 		324354C020EB55450027EBE4 /* MediatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324354BF20EB55450027EBE4 /* MediatorTests.swift */; };
@@ -131,6 +134,8 @@
 		3226FB6D20759FE50007CEF3 /* EqualityHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EqualityHelpers.swift; sourceTree = "<group>"; };
 		3226FB7020871BFE0007CEF3 /* TODO */ = {isa = PBXFileReference; lastKnownFileType = text; path = TODO; sourceTree = "<group>"; };
 		3226FB7220871D4F0007CEF3 /* FlyweightTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlyweightTests.swift; sourceTree = "<group>"; };
+		3229704C20F1D17B00F7D873 /* LRUCacheImplementation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LRUCacheImplementation.swift; sourceTree = "<group>"; };
+		3229704F20F1E8F100F7D873 /* LRUCacheTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LRUCacheTests.swift; sourceTree = "<group>"; };
 		324354BC20EB531B0027EBE4 /* ChainOfResponsibilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChainOfResponsibilityTests.swift; sourceTree = "<group>"; };
 		324354BF20EB55450027EBE4 /* MediatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediatorTests.swift; sourceTree = "<group>"; };
 		324354C220EB5C990027EBE4 /* TemplateMethodTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateMethodTests.swift; sourceTree = "<group>"; };
@@ -231,6 +236,7 @@
 			children = (
 				3226FB63207594DB0007CEF3 /* UserDefaultsCacheImplementation.swift */,
 				3226FB6A20759EED0007CEF3 /* DictionaryCacheImplementation.swift */,
+				3229704C20F1D17B00F7D873 /* LRUCacheImplementation.swift */,
 			);
 			name = CacheImplementations;
 			sourceTree = "<group>";
@@ -321,6 +327,7 @@
 				32E8E0B61C52F70100E7B813 /* TreeTests.swift */,
 				32E8E0BA1C53023400E7B813 /* BinarySearchTreeTests.swift */,
 				324354D420ED57F80027EBE4 /* GraphAlgorithmsTests.swift */,
+				3229704F20F1E8F100F7D873 /* LRUCacheTests.swift */,
 			);
 			path = DesignPatternsTests;
 			sourceTree = "<group>";
@@ -450,6 +457,7 @@
 				3226FB68207595330007CEF3 /* FacadeTests.swift in Sources */,
 				326F75DA1C2D5EFA001CF09D /* Strategy.swift in Sources */,
 				3226FB64207594DB0007CEF3 /* UserDefaultsCacheImplementation.swift in Sources */,
+				3229704D20F1D17B00F7D873 /* LRUCacheImplementation.swift in Sources */,
 				3226FB7320871D4F0007CEF3 /* FlyweightTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -482,6 +490,7 @@
 				3226FB6C20759EED0007CEF3 /* DictionaryCacheImplementation.swift in Sources */,
 				324354C620EB5E2B0027EBE4 /* VisitorTests.swift in Sources */,
 				324354CD20EB5FD10027EBE4 /* TreeTests.swift in Sources */,
+				3229705120F1E8F100F7D873 /* LRUCacheTests.swift in Sources */,
 				3226FB4F206D64DF0007CEF3 /* Singleton.swift in Sources */,
 				324354CA20EB5FC70027EBE4 /* ActiveObjectTests.swift in Sources */,
 				3226FB57206DA5400007CEF3 /* BridgeTests.swift in Sources */,
@@ -491,6 +500,7 @@
 				324354D620ED581F0027EBE4 /* GraphSimpleAlgorithms.swift in Sources */,
 				3226FB65207594DB0007CEF3 /* UserDefaultsCacheImplementation.swift in Sources */,
 				324354C120EB55CC0027EBE4 /* Mediator.swift in Sources */,
+				3229704E20F1D17B00F7D873 /* LRUCacheImplementation.swift in Sources */,
 				3226FB69207595330007CEF3 /* FacadeTests.swift in Sources */,
 				324354C320EB5C990027EBE4 /* TemplateMethodTests.swift in Sources */,
 				324354D320ED431B0027EBE4 /* BinarySearchTree.swift in Sources */,
