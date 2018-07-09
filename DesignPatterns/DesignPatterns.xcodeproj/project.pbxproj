@@ -36,13 +36,15 @@
 		3226FB6C20759EED0007CEF3 /* DictionaryCacheImplementation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3226FB6A20759EED0007CEF3 /* DictionaryCacheImplementation.swift */; };
 		3226FB6E20759FE50007CEF3 /* EqualityHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3226FB6D20759FE50007CEF3 /* EqualityHelpers.swift */; };
 		3226FB6F20759FE50007CEF3 /* EqualityHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3226FB6D20759FE50007CEF3 /* EqualityHelpers.swift */; };
-		3226FB7120871BFE0007CEF3 /* TODO in Resources */ = {isa = PBXBuildFile; fileRef = 3226FB7020871BFE0007CEF3 /* TODO */; };
 		3226FB7320871D4F0007CEF3 /* FlyweightTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3226FB7220871D4F0007CEF3 /* FlyweightTests.swift */; };
 		3226FB7420871D4F0007CEF3 /* FlyweightTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3226FB7220871D4F0007CEF3 /* FlyweightTests.swift */; };
 		3226FB7520871DED0007CEF3 /* Flyweight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 326F75B51C2A4FA4001CF09D /* Flyweight.swift */; };
 		3229704D20F1D17B00F7D873 /* LRUCacheImplementation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3229704C20F1D17B00F7D873 /* LRUCacheImplementation.swift */; };
 		3229704E20F1D17B00F7D873 /* LRUCacheImplementation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3229704C20F1D17B00F7D873 /* LRUCacheImplementation.swift */; };
 		3229705120F1E8F100F7D873 /* LRUCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3229704F20F1E8F100F7D873 /* LRUCacheTests.swift */; };
+		3229705320F27DBF00F7D873 /* SwiftFeatures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3229705220F27DBF00F7D873 /* SwiftFeatures.swift */; };
+		3229705620F27E9100F7D873 /* CopyOnWrite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3229705520F27E9100F7D873 /* CopyOnWrite.swift */; };
+		3229705720F27EA400F7D873 /* CopyOnWrite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3229705520F27E9100F7D873 /* CopyOnWrite.swift */; };
 		324354BD20EB531B0027EBE4 /* ChainOfResponsibilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324354BC20EB531B0027EBE4 /* ChainOfResponsibilityTests.swift */; };
 		324354BE20EB531F0027EBE4 /* ChainOfResponsibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 326F75C11C2AAA9B001CF09D /* ChainOfResponsibility.swift */; };
 		324354C020EB55450027EBE4 /* MediatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324354BF20EB55450027EBE4 /* MediatorTests.swift */; };
@@ -132,10 +134,11 @@
 		3226FB67207595330007CEF3 /* FacadeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FacadeTests.swift; sourceTree = "<group>"; };
 		3226FB6A20759EED0007CEF3 /* DictionaryCacheImplementation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryCacheImplementation.swift; sourceTree = "<group>"; };
 		3226FB6D20759FE50007CEF3 /* EqualityHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EqualityHelpers.swift; sourceTree = "<group>"; };
-		3226FB7020871BFE0007CEF3 /* TODO */ = {isa = PBXFileReference; lastKnownFileType = text; path = TODO; sourceTree = "<group>"; };
 		3226FB7220871D4F0007CEF3 /* FlyweightTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlyweightTests.swift; sourceTree = "<group>"; };
 		3229704C20F1D17B00F7D873 /* LRUCacheImplementation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LRUCacheImplementation.swift; sourceTree = "<group>"; };
 		3229704F20F1E8F100F7D873 /* LRUCacheTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LRUCacheTests.swift; sourceTree = "<group>"; };
+		3229705220F27DBF00F7D873 /* SwiftFeatures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftFeatures.swift; sourceTree = "<group>"; };
+		3229705520F27E9100F7D873 /* CopyOnWrite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopyOnWrite.swift; sourceTree = "<group>"; };
 		324354BC20EB531B0027EBE4 /* ChainOfResponsibilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChainOfResponsibilityTests.swift; sourceTree = "<group>"; };
 		324354BF20EB55450027EBE4 /* MediatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediatorTests.swift; sourceTree = "<group>"; };
 		324354C220EB5C990027EBE4 /* TemplateMethodTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateMethodTests.swift; sourceTree = "<group>"; };
@@ -241,10 +244,17 @@
 			name = CacheImplementations;
 			sourceTree = "<group>";
 		};
+		3229705420F27E8100F7D873 /* SwiftFeatures */ = {
+			isa = PBXGroup;
+			children = (
+				3229705520F27E9100F7D873 /* CopyOnWrite.swift */,
+			);
+			name = SwiftFeatures;
+			sourceTree = "<group>";
+		};
 		326F75721C2827A0001CF09D = {
 			isa = PBXGroup;
 			children = (
-				3226FB7020871BFE0007CEF3 /* TODO */,
 				326F757D1C2827A0001CF09D /* DesignPatterns */,
 				32F6AE5A2067460100E92B25 /* DesignPatternsTests */,
 				326F757C1C2827A0001CF09D /* Products */,
@@ -263,6 +273,7 @@
 		326F757D1C2827A0001CF09D /* DesignPatterns */ = {
 			isa = PBXGroup;
 			children = (
+				3229705420F27E8100F7D873 /* SwiftFeatures */,
 				3226FB61207594A50007CEF3 /* CacheImplementations */,
 				3226FB5A206DA5EB0007CEF3 /* GraphAlgorithms */,
 				3226FB59206DA5E10007CEF3 /* TreeAlgorithms */,
@@ -328,6 +339,7 @@
 				32E8E0BA1C53023400E7B813 /* BinarySearchTreeTests.swift */,
 				324354D420ED57F80027EBE4 /* GraphAlgorithmsTests.swift */,
 				3229704F20F1E8F100F7D873 /* LRUCacheTests.swift */,
+				3229705220F27DBF00F7D873 /* SwiftFeatures.swift */,
 			);
 			path = DesignPatternsTests;
 			sourceTree = "<group>";
@@ -411,7 +423,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3226FB7120871BFE0007CEF3 /* TODO in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -431,6 +442,7 @@
 				326F75AE1C29783C001CF09D /* Decorator.swift in Sources */,
 				326F759E1C28D1B8001CF09D /* Singleton.swift in Sources */,
 				326F75E21C2D627C001CF09D /* Visitor.swift in Sources */,
+				3229705620F27E9100F7D873 /* CopyOnWrite.swift in Sources */,
 				326F75BE1C2A96D0001CF09D /* ObjectPool.swift in Sources */,
 				326F757F1C2827A0001CF09D /* main.swift in Sources */,
 				326F75921C28B680001CF09D /* Number.swift in Sources */,
@@ -509,6 +521,7 @@
 				32A4CECF20E029FA007996E6 /* ObjectPoolTests.swift in Sources */,
 				3226FB6F20759FE50007CEF3 /* EqualityHelpers.swift in Sources */,
 				324354D220ED3FD60027EBE4 /* Tree.swift in Sources */,
+				3229705720F27EA400F7D873 /* CopyOnWrite.swift in Sources */,
 				3226FB422068BEE50007CEF3 /* AbstractFactory.swift in Sources */,
 				324354D520ED57F80027EBE4 /* GraphAlgorithmsTests.swift in Sources */,
 				3226FB55206DA1380007CEF3 /* Adapter.swift in Sources */,
@@ -516,6 +529,7 @@
 				3226FB49206CC3560007CEF3 /* Factory.swift in Sources */,
 				324354BE20EB531F0027EBE4 /* ChainOfResponsibility.swift in Sources */,
 				32F6AE612067469E00E92B25 /* Strategy.swift in Sources */,
+				3229705320F27DBF00F7D873 /* SwiftFeatures.swift in Sources */,
 				32F6AE5C2067460100E92B25 /* StrategyTests.swift in Sources */,
 				3226FB58206DA5730007CEF3 /* Bridge.swift in Sources */,
 				324354CF20EC9FAF0027EBE4 /* Future.swift in Sources */,

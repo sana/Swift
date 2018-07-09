@@ -73,6 +73,37 @@ class GraphAlgorithmsTests : XCTestCase {
         }
     }
 
+    func testSimpleSplitwise() {
+        let splitwise = Splitwise()
+        splitwise.addTransaction(fromSource: "x", toDestination: "y", withWeight: 1)
+        splitwise.addTransaction(fromSource: "y", toDestination: "z", withWeight: 2)
+        splitwise.addTransaction(fromSource: "z", toDestination: "x", withWeight: 3)
+        splitwise.addTransaction(fromSource: "x", toDestination: "y", withWeight: 4)
+        let simplifyResults = splitwise.simplify()
+        let expectedResults = [(source: "y", destination: "x", weight: 5.0), (source: "x", destination: "z", weight: 3.0), (source: "z", destination: "y", weight: 2.0)]
+        for (it1, it2) in zip(simplifyResults, expectedResults) {
+            guard it1 == it2 else {
+                XCTFail()
+                return
+            }
+        }
+    }
+
+    func testComplexSplitwise() {
+        let splitwise = Splitwise()
+        splitwise.addTransaction(fromSource: "a", toDestination: "b", withWeight: 1)
+        splitwise.addTransaction(fromSource: "b", toDestination: "c", withWeight: 2)
+        splitwise.addTransaction(fromSource: "a", toDestination: "c", withWeight: 3)
+        let simplifyResults = splitwise.simplify()
+        let expectedResults = [(source: "c", destination: "a", weight: 4.0), (source: "c", destination: "b", weight: 1.0)]
+        for (it1, it2) in zip(simplifyResults, expectedResults) {
+            guard it1 == it2 else {
+                XCTFail()
+                return
+            }
+        }
+    }
+
     // MARK :- Private helpers
 
     private func createSimpleGraph() -> Graph {
@@ -101,4 +132,9 @@ class GraphAlgorithmsTests : XCTestCase {
 
         return graph
     }
+}
+
+func == (tuple1: (source: String, destination: String, weight: Double), tuple2: (source: String, destination: String, weight: Double)) -> Bool
+{
+    return (tuple1.source == tuple2.source) && (tuple1.destination == tuple2.destination) && (tuple1.weight == tuple2.weight)
 }

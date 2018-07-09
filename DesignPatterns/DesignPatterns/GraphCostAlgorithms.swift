@@ -185,3 +185,102 @@ class Kruskal {
         return result
     }
 }
+
+class Splitwise {
+    var edges: [String : [String : Double]]
+
+    init() {
+        edges = [String : [String : Double]]()
+    }
+
+    // `source` paid `destintion` `weight` dollars
+    func addTransaction(fromSource source: String, toDestination destination: String, withWeight weight: Double) {
+        if var existingTransactionsFromSource = edges[source] {
+            guard let existingTransactionsFromSourceToDestination = existingTransactionsFromSource[destination] else {
+                existingTransactionsFromSource[destination] = weight
+                edges[source] = existingTransactionsFromSource
+                return
+            }
+            existingTransactionsFromSource[destination] = existingTransactionsFromSourceToDestination + weight
+            edges[source] = existingTransactionsFromSource
+        } else {
+            edges[source] = [destination : weight]
+        }
+    }
+
+    func asDictionary() ->  [String : [String : Double]] {
+        return edges
+    }
+
+    func simplify() -> [(source: String, destination: String, weight: Double)] {
+        var result = [(source: String, destination: String, weight: Double)]()
+        var creditorsList = creditors() // This should be a heap, so the complexity stays linear
+        var debitorsList = debitors()
+
+        while creditorsList.count > 0 && debitorsList.count > 0 {
+            guard
+                let highestCreditor = creditorsList.first,
+                let highestDebitor = debitorsList.first
+            else {
+                break
+            }
+            if highestDebitor.weight == highestCreditor.weight {
+                result.append((source: highestCreditor.user, destination: highestDebitor.user, weight: highestDebitor.weight))
+                creditorsList.removeFirst()
+                debitorsList.removeFirst()
+            } else if highestDebitor.weight < highestCreditor.weight {
+                result.append((source: highestCreditor.user, destination: highestDebitor.user, weight: highestDebitor.weight))
+                debitorsList.removeFirst()
+                creditorsList.removeFirst()
+                creditorsList.append((user: highestCreditor.user, weight: highestCreditor.weight - highestDebitor.weight))
+                creditorsList.sort(by: { $0.weight > $1.weight })
+            } else {
+                result.append((source: highestCreditor.user, destination: highestDebitor.user, weight: highestCreditor.weight))
+                debitorsList.removeFirst()
+                creditorsList.removeFirst()
+                debitorsList.append((user: highestDebitor.user, weight: highestDebitor.weight - highestCreditor.weight))
+                debitorsList.sort(by: { $0.weight > $1.weight })
+            }
+        }
+
+        return result.filter { $0.source != $0.destination }
+    }
+
+    // Return the ordered list of people that lend money
+    func debitors() -> [(user: String, weight: Double)] {
+        return Splitwise.debitors(forGraph: edges)
+    }
+
+    // Return the ordered list of people that have received money
+    func creditors() -> [(user: String, weight: Double)] {
+        return Splitwise.debitors(forGraph: reversedGraph())
+    }
+
+    // MARK :- Private helpers
+
+    static private func debitors(forGraph graph: [String : [String : Double]]) -> [(String, Double)] {
+        var result = [(String, Double)]()
+        for key in graph.keys {
+            guard let transactionsFromKey = graph[key] else {
+                continue
+            }
+            let creditSum = transactionsFromKey.reduce(0, { $0 + $01.value})
+            result.append((key, creditSum))
+        }
+        result.sort(by: { $0.1 > $1.1 })
+        return result
+    }
+
+    func reversedGraph() -> [String : [String : Double]] {
+        let splitWise = Splitwise()
+        for source in edges.keys {
+            guard let transactionsFromSource = edges[source] else {
+                continue
+            }
+            for transaction in transactionsFromSource {
+                splitWise.addTransaction(fromSource: transaction.key, toDestination: source, withWeight: transaction.value)
+            }
+        }
+        return splitWise.edges
+    }
+}
