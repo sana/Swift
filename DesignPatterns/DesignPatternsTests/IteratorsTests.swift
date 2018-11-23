@@ -31,6 +31,9 @@ class IteratorsTests : XCTestCase {
             }
             XCTAssertEqual(value, fibonacciArray[index])
         }
+
+        let fibonacciSequence = AnySequence({ FibonacciIterator() })
+        XCTAssertEqual(Array(fibonacciSequence.prefix(10)), fibonacciArray)
     }
 
     func testPrefixIterator() {

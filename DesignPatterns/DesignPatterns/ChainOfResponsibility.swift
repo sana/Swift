@@ -30,7 +30,7 @@ protocol EventHandler {
 }
 
 protocol EventHandlerChain : EventHandler {
-    var next: EventHandlerChain? { get set }
+    var next: EventHandlerChain? { get }
 }
 
 class EventHandlerCenter : EventHandler {

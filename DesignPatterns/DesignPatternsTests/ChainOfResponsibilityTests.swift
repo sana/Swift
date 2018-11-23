@@ -17,12 +17,7 @@ class EvenPositiveNumbersHandler : EventHandlerChain {
     }
 
     var next: EventHandlerChain? {
-        get {
-            return nil
-        }
-        set {
-            self.next = newValue
-        }
+        return nil
     }
 }
 
@@ -35,12 +30,7 @@ class OddPositiveNumbersHandler : EventHandlerChain {
     }
 
     var next: EventHandlerChain? {
-        get {
-            return EvenPositiveNumbersHandler()
-        }
-        set {
-            self.next = newValue
-        }
+        return EvenPositiveNumbersHandler()
     }
 }
 

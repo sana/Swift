@@ -68,6 +68,9 @@ class MyUITableView : UIScrollView /* UITableView */ {
         didSet {
             // Once we know the frame, we want to create the cells this UIScrollView manages
             let cellsCount = Int(round(self.frame.height / cellHeight))
+            for cell in self.cells {
+                cell.removeFromSuperview()
+            }
             self.cells = [UITableViewCell]()
             for i in 0..<cellsCount + 2 {
                 let cell = dataSource.cell(atIndexPath: IndexPath(row: i, section: 0))
