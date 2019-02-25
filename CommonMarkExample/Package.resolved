@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "Ccmark",
+        "repositoryURL": "https://github.com/sana/Ccmark",
+        "state": {
+          "branch": "master",
+          "revision": "6c5a01987a851cc1de2714cd0d7f301b5b17563d",
+          "version": null
+        }
+      }
+    ]
+  },
+  "version": 1
+}
