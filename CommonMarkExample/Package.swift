@@ -4,18 +4,14 @@
 import PackageDescription
 
 let package = Package(
-    name: "CommonMarkExample",
+    name: "CommonMarkSwift",
+    products: [
+        .library(name: "CommonMarkSwift", targets: ["CommonMarkSwift"])
+    ],
     dependencies: [
       .package(url: "https://github.com/sana/Ccmark", .branch("master")),
     ],
     targets: [
-        // Targets are the basic building blocks of a package. A target can define a module or a test suite.
-        // Targets can depend on other targets in this package, and on products in packages which this package depends on.
-        .target(
-            name: "CommonMarkExample",
-            dependencies: []),
-//        .testTarget(
-//            name: "CommonMarkExampleTests",
-//            dependencies: ["CommonMarkExample"]),
+        .target(name: "CommonMarkSwift")
     ]
 )
