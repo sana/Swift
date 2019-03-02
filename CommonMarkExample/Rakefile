@@ -7,7 +7,6 @@ task :xcodeproj do
 
   project = Xcodeproj::Project.open(Dir["*.xcodeproj"].first)
   project.build_configurations.each { |config|
-    puts config
     config.build_settings["SDKROOT"] = "iphoneos"
     config.build_settings.delete("SUPPORTED_PLATFORMS")
   }
