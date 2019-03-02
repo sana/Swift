@@ -11,8 +11,3 @@ public extension String {
         return String(cString: outString)
     }
 }
-
-let markdown = "*Hello world!*"
-if let markdownHTML = markdown.markDownToHTML() {
-    print("OK \(markdownHTML)")
-}

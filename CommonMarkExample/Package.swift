@@ -12,6 +12,10 @@ let package = Package(
       .package(url: "https://github.com/sana/Ccmark", .branch("master")),
     ],
     targets: [
-        .target(name: "CommonMarkSwift")
+        .target(name: "CommonMarkSwift"),
+        .testTarget(
+            name: "CommonMarkSwiftTests",
+            dependencies: ["CommonMarkSwift"]
+        )
     ]
 )
