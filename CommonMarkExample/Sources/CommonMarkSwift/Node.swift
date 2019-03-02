@@ -8,6 +8,8 @@
 import Foundation
 import Ccmark
 
+// MARK:- Node
+
 public class Node {
     private let node: OpaquePointer
 
@@ -88,6 +90,17 @@ public class Node {
         return result
     }
 
+    public var fenceInfo: String? {
+        guard let cString = cmark_node_get_fence_info(node) else {
+            return nil
+        }
+        return String(cString: cString)
+    }
+
+    public var headerLevel: Int32 {
+        return cmark_node_get_heading_level(node)
+    }
+
     deinit {
         let type = cmark_node_get_type(node)
         guard type == CMARK_NODE_DOCUMENT else {
@@ -103,14 +116,16 @@ extension Node : Equatable {
     }
 }
 
-public extension Inline {
+// MARK :- InlineNode
+
+public extension InlineNode {
     init?(node: Node) {
         let inlineChildren = {
-            node.children.compactMap(Inline.init)
+            node.children.compactMap(InlineNode.init)
         }
         switch node.type {
         case CMARK_NODE_TEXT:
-            guard let inlineText = node.literal.map( { Inline.text(text: $0) } ) else {
+            guard let inlineText = node.literal.map( { InlineNode.text(text: $0) } ) else {
                 return nil
             }
             self = inlineText
@@ -119,17 +134,17 @@ public extension Inline {
         case CMARK_NODE_LINEBREAK:
             self = .lineBreak
         case CMARK_NODE_CODE:
-            guard let inlineCode = node.literal.map( { Inline.code(text: $0) } ) else {
+            guard let inlineCode = node.literal.map( { InlineNode.code(text: $0) } ) else {
                 return nil
             }
             self = inlineCode
         case CMARK_NODE_HTML_INLINE:
-            guard let inlineHtml = node.literal.map( { Inline.html(text: $0) } ) else {
+            guard let inlineHtml = node.literal.map( { InlineNode.html(text: $0) } ) else {
                 return nil
             }
             self = inlineHtml
         case CMARK_NODE_CUSTOM_INLINE:
-            guard let inlineCustom = node.literal.map( { Inline.custom(literal: $0) } ) else {
+            guard let inlineCustom = node.literal.map( { InlineNode.custom(literal: $0) } ) else {
                 return nil
             }
             self = inlineCustom
@@ -151,6 +166,8 @@ public extension Inline {
     }
 }
 
+// MARK:- ListType
+
 public extension ListType {
     init?(node: Node) {
         switch node.listType {
@@ -160,6 +177,56 @@ public extension ListType {
             self = .ordered
         case CMARK_NO_LIST:
             return nil
+        default:
+            return nil
+        }
+    }
+}
+
+
+// MARK:- BlockNode
+
+private extension Node {
+    func listItem() -> [BlockNode] {
+        return children.compactMap { BlockNode(node: $0) }
+    }
+}
+
+extension BlockNode {
+    init?(node: Node) {
+        let parseInlineChildren = { node.children.compactMap(InlineNode.init) }
+        let parseBlockNodeChildren = { node.children.compactMap(BlockNode.init) }
+        switch node.type {
+        case CMARK_NODE_PARAGRAPH:
+            self = .paragraph(text: parseInlineChildren())
+        case CMARK_NODE_BLOCK_QUOTE:
+            self = .blockQuote(items: parseBlockNodeChildren())
+        case CMARK_NODE_LIST:
+            guard let listType = ListType(node: node) else {
+                return nil
+            }
+            self = .list(items: node.children.map { $0.listItem() }, type: listType)
+        case CMARK_NODE_CODE_BLOCK:
+            guard let literal = node.literal else {
+                return nil
+            }
+            self = .codeBlock(text: literal, language: node.fenceInfo)
+        case CMARK_NODE_HTML_BLOCK:
+            guard let literal = node.literal else {
+                return nil
+            }
+            self = .html(text: literal)
+        case CMARK_NODE_CUSTOM_BLOCK:
+            guard let literal = node.literal else {
+                return nil
+            }
+            self = .custom(literal: literal)
+        case CMARK_NODE_HEADING:
+            self = .heading(text: parseInlineChildren(), level: Int(node.headerLevel))
+        case CMARK_NODE_THEMATIC_BREAK:
+            self = .thematicBreak
+        case CMARK_NODE_DOCUMENT:
+            self = .document
         default:
             return nil
         }

@@ -8,17 +8,17 @@
 import Foundation
 import Ccmark
 
-public enum Inline {
+public enum InlineNode {
     case text(text: String)
     case softBreak
     case lineBreak
     case code(text: String)
     case html(text: String)
-    case emphasis(children: [Inline])
-    case strong(children: [Inline])
+    case emphasis(children: [InlineNode])
+    case strong(children: [InlineNode])
     case custom(literal: String)
-    case link(children: [Inline], title: String?, url: String?)
-    case image(children: [Inline], title: String?, url: String?)
+    case link(children: [InlineNode], title: String?, url: String?)
+    case image(children: [InlineNode], title: String?, url: String?)
     case firstInline
     case lastInline
 }
@@ -28,13 +28,14 @@ public enum ListType {
     case ordered
 }
 
-public enum Block {
-    case list(items: [[Block]], type: ListType)
-    case blockQuote(items: [Block])
+public enum BlockNode {
+    case list(items: [[BlockNode]], type: ListType)
+    case blockQuote(items: [BlockNode])
     case codeBlock(text: String, language: String?)
     case html(text: String)
-    case paragraph(text: [Inline])
-    case heading(text: [Inline], level: Int)
+    case paragraph(text: [InlineNode])
+    case heading(text: [InlineNode], level: Int)
     case custom(literal: String)
     case thematicBreak
+    case document
 }
