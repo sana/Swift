@@ -11,6 +11,13 @@ import Ccmark
 public class Node {
     private let node: OpaquePointer
 
+    public init?(type: cmark_node_type) {
+        guard let node = cmark_node_new(type) else {
+            return nil
+        }
+        self.node = node
+    }
+
     public init(node: OpaquePointer) {
         self.node = node
     }
@@ -22,7 +29,7 @@ public class Node {
         self.node = node
     }
 
-    public var type: cmark_node_type {
+    fileprivate var type: cmark_node_type {
         return cmark_node_get_type(node)
     }
 
@@ -90,7 +97,13 @@ public class Node {
     }
 }
 
-extension Inline {
+extension Node : Equatable {
+    public static func == (lhs: Node, rhs: Node) -> Bool {
+        return lhs.node == rhs.node
+    }
+}
+
+public extension Inline {
     init?(node: Node) {
         let inlineChildren = {
             node.children.compactMap(Inline.init)
@@ -132,6 +145,21 @@ extension Inline {
             self = .firstInline
         case CMARK_NODE_LAST_INLINE:
             self = .lastInline
+        default:
+            return nil
+        }
+    }
+}
+
+public extension ListType {
+    init?(node: Node) {
+        switch node.listType {
+        case CMARK_BULLET_LIST:
+            self = .unordered
+        case CMARK_ORDERED_LIST:
+            self = .ordered
+        case CMARK_NO_LIST:
+            return nil
         default:
             return nil
         }

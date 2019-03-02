@@ -1,6 +1,5 @@
 import CommonMarkSwift
 import XCTest
-import class Foundation.Bundle
 
 final class CommonMarkExampleTests: XCTestCase {
     func testExample() throws {
