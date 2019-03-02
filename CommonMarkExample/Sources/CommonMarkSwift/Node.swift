@@ -91,14 +91,24 @@ public class Node {
     }
 
     public var fenceInfo: String? {
-        guard let cString = cmark_node_get_fence_info(node) else {
-            return nil
+        get {
+            guard let cString = cmark_node_get_fence_info(node) else {
+                return nil
+            }
+            return String(cString: cString)
         }
-        return String(cString: cString)
+        set {
+            cmark_node_set_fence_info(node, newValue?.cString(using: .utf8))
+        }
     }
 
     public var headerLevel: Int32 {
-        return cmark_node_get_heading_level(node)
+        get {
+            return cmark_node_get_heading_level(node)
+        }
+        set {
+            cmark_node_set_heading_level(node, newValue)
+        }
     }
 
     deinit {
@@ -225,10 +235,94 @@ extension BlockNode {
             self = .heading(text: parseInlineChildren(), level: Int(node.headerLevel))
         case CMARK_NODE_THEMATIC_BREAK:
             self = .thematicBreak
-        case CMARK_NODE_DOCUMENT:
-            self = .document
         default:
             return nil
         }
+    }
+}
+
+// MARK:- Node extensions
+
+extension Node {
+    convenience init(type: cmark_node_type, children: [Node] = []) {
+        self.init(node: cmark_node_new(type))
+        children.forEach { cmark_node_append_child(node, $0.node) }
+    }
+
+    convenience init?(type: cmark_node_type, literal: String) {
+        self.init(type: type)
+        self.literal = literal
+    }
+
+    convenience init(type: cmark_node_type, blocks: [BlockNode]) {
+        self.init(type: type, children: blocks.compactMap(Node.init))
+    }
+
+    convenience init(type: cmark_node_type, elements: [InlineNode]) {
+        self.init(type: type, children: elements.compactMap(Node.init))
+    }
+}
+
+extension Node {
+    convenience init?(element: InlineNode) {
+        switch element {
+        case .text(let text):
+            self.init(type: CMARK_NODE_TEXT, literal: text)
+        case .softBreak:
+            self.init(type: CMARK_NODE_SOFTBREAK)
+        case .lineBreak:
+            self.init(type: CMARK_NODE_LINEBREAK)
+        case .code(let text):
+            self.init(type: CMARK_NODE_CODE, literal: text)
+        case .html(let text):
+            self.init(type: CMARK_NODE_HTML_INLINE, literal: text)
+        case .emphasis(let children):
+            self.init(type: CMARK_NODE_EMPH, elements: children)
+        case .strong(let children):
+            self.init(type: CMARK_NODE_STRONG, elements: children)
+        case .custom(let literal):
+            self.init(type: CMARK_NODE_CUSTOM_INLINE, literal: literal)
+        case .link(let children, let title, let url):
+            self.init(type: CMARK_NODE_LINK, elements: children)
+            self.title = title
+            self.urlString = url
+        case .image(let children, let title, let url):
+            self.init(type: CMARK_NODE_IMAGE, elements: children)
+            self.title = title
+            self.urlString = url
+        case .firstInline:
+            self.init(type: CMARK_NODE_FIRST_INLINE)
+        case .lastInline:
+            self.init(type: CMARK_NODE_LAST_INLINE)
+        }
+    }
+
+    convenience init?(block: BlockNode) {
+        switch block {
+        case .list(let items, let type):
+            let listItems = items.map { Node(type: CMARK_NODE_ITEM, blocks: $0) }
+            self.init(type: CMARK_NODE_LIST, children: listItems)
+            listType = type == .unordered ? CMARK_BULLET_LIST : CMARK_ORDERED_LIST
+        case .blockQuote(let items):
+            self.init(type: CMARK_NODE_BLOCK_QUOTE, blocks: items)
+        case .codeBlock(let text, let language):
+            self.init(type: CMARK_NODE_CODE_BLOCK, literal: text)
+            fenceInfo = language
+        case .html(let text):
+            self.init(type: CMARK_NODE_HTML_BLOCK, literal: text)
+        case .paragraph(let text):
+            self.init(type: CMARK_NODE_PARAGRAPH, elements: text)
+        case .heading(let text, let level):
+            self.init(type: CMARK_NODE_CUSTOM_BLOCK, elements: text)
+            headerLevel = Int32(level)
+        case .custom(let literal):
+            self.init(type: CMARK_NODE_CUSTOM_BLOCK, literal: literal)
+        case .thematicBreak:
+            self.init(type: CMARK_NODE_THEMATIC_BREAK)
+        }
+    }
+
+    convenience init?(blocks: [BlockNode]) {
+        self.init(type: CMARK_NODE_DOCUMENT, blocks: blocks)
     }
 }

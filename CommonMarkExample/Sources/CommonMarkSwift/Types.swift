@@ -37,5 +37,4 @@ public enum BlockNode {
     case heading(text: [InlineNode], level: Int)
     case custom(literal: String)
     case thematicBreak
-    case document
 }
