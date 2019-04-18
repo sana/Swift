@@ -117,6 +117,11 @@
 		32C23D7A21A8726900E26D3B /* CollectionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32C23D7821A8726900E26D3B /* CollectionsTests.swift */; };
 		32C23D7C21AD1C1500E26D3B /* Sorting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32C23D7B21AD1C1500E26D3B /* Sorting.swift */; };
 		32C23D7D21AD1C1500E26D3B /* Sorting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32C23D7B21AD1C1500E26D3B /* Sorting.swift */; };
+		32CD1D8022683428006507DC /* GenericIterator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32CD1D7F22683428006507DC /* GenericIterator.swift */; };
+		32CD1D8122683428006507DC /* GenericIterator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32CD1D7F22683428006507DC /* GenericIterator.swift */; };
+		32CD1D83226834A7006507DC /* GenericIteratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32CD1D82226834A7006507DC /* GenericIteratorTests.swift */; };
+		32CD1D8622683A68006507DC /* ConcurrentQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32CD1D8522683A68006507DC /* ConcurrentQueue.swift */; };
+		32CD1D8722683A68006507DC /* ConcurrentQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32CD1D8522683A68006507DC /* ConcurrentQueue.swift */; };
 		32E8E0B31C52F62A00E7B813 /* Tree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32E8E0B21C52F62A00E7B813 /* Tree.swift */; };
 		32E8E0B51C52F64400E7B813 /* BinarySearchTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32E8E0B41C52F64400E7B813 /* BinarySearchTree.swift */; };
 		32E8E0B91C52FF7000E7B813 /* GraphSimpleAlgorithms.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32E8E0B81C52FF7000E7B813 /* GraphSimpleAlgorithms.swift */; };
@@ -204,6 +209,9 @@
 		32C23D7521A79BE500E26D3B /* Collections.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collections.swift; sourceTree = "<group>"; };
 		32C23D7821A8726900E26D3B /* CollectionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionsTests.swift; sourceTree = "<group>"; };
 		32C23D7B21AD1C1500E26D3B /* Sorting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sorting.swift; sourceTree = "<group>"; };
+		32CD1D7F22683428006507DC /* GenericIterator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericIterator.swift; sourceTree = "<group>"; };
+		32CD1D82226834A7006507DC /* GenericIteratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericIteratorTests.swift; sourceTree = "<group>"; };
+		32CD1D8522683A68006507DC /* ConcurrentQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcurrentQueue.swift; sourceTree = "<group>"; };
 		32E8E0B01C52F0B200E7B813 /* IteratorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IteratorTests.swift; sourceTree = "<group>"; };
 		32E8E0B21C52F62A00E7B813 /* Tree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tree.swift; sourceTree = "<group>"; };
 		32E8E0B41C52F64400E7B813 /* BinarySearchTree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BinarySearchTree.swift; sourceTree = "<group>"; };
@@ -281,6 +289,7 @@
 		326F75721C2827A0001CF09D = {
 			isa = PBXGroup;
 			children = (
+				32CD1D8422683A56006507DC /* Concurrency */,
 				32C23D6821A78BFD00E26D3B /* AdvancedSwift */,
 				326F757D1C2827A0001CF09D /* DesignPatterns */,
 				32F6AE5A2067460100E92B25 /* DesignPatternsTests */,
@@ -343,8 +352,17 @@
 				32C23D7521A79BE500E26D3B /* Collections.swift */,
 				32C23D7B21AD1C1500E26D3B /* Sorting.swift */,
 				32AC96DA22235FA600EF4BE3 /* Functions.swift */,
+				32CD1D7F22683428006507DC /* GenericIterator.swift */,
 			);
 			path = AdvancedSwift;
+			sourceTree = "<group>";
+		};
+		32CD1D8422683A56006507DC /* Concurrency */ = {
+			isa = PBXGroup;
+			children = (
+				32CD1D8522683A68006507DC /* ConcurrentQueue.swift */,
+			);
+			path = Concurrency;
 			sourceTree = "<group>";
 		};
 		32F6AE5A2067460100E92B25 /* DesignPatternsTests */ = {
@@ -383,6 +401,7 @@
 				32C23D7221A7961400E26D3B /* LinkedListTests.swift */,
 				32C23D7821A8726900E26D3B /* CollectionsTests.swift */,
 				32AC96DC2223603100EF4BE3 /* FunctionsTests.swift */,
+				32CD1D82226834A7006507DC /* GenericIteratorTests.swift */,
 			);
 			path = DesignPatternsTests;
 			sourceTree = "<group>";
@@ -485,6 +504,8 @@
 				32E8E0B51C52F64400E7B813 /* BinarySearchTree.swift in Sources */,
 				326F75AE1C29783C001CF09D /* Decorator.swift in Sources */,
 				326F759E1C28D1B8001CF09D /* Singleton.swift in Sources */,
+				32CD1D8622683A68006507DC /* ConcurrentQueue.swift in Sources */,
+				32CD1D8022683428006507DC /* GenericIterator.swift in Sources */,
 				326F75E21C2D627C001CF09D /* Visitor.swift in Sources */,
 				32C23D7921A8726900E26D3B /* CollectionsTests.swift in Sources */,
 				3229705620F27E9100F7D873 /* CopyOnWrite.swift in Sources */,
@@ -547,6 +568,7 @@
 				3226FB7520871DED0007CEF3 /* Flyweight.swift in Sources */,
 				3226FB432068BF160007CEF3 /* Number.swift in Sources */,
 				324354C020EB55450027EBE4 /* MediatorTests.swift in Sources */,
+				32CD1D83226834A7006507DC /* GenericIteratorTests.swift in Sources */,
 				3226FB5D206DA6900007CEF3 /* Composite.swift in Sources */,
 				3226FB5C206DA6490007CEF3 /* CompositeTests.swift in Sources */,
 				32C23D7421A7961400E26D3B /* LinkedListTests.swift in Sources */,
@@ -557,6 +579,7 @@
 				324354C620EB5E2B0027EBE4 /* VisitorTests.swift in Sources */,
 				32C23D6E21A78CAF00E26D3B /* IteratorsTests.swift in Sources */,
 				324354CD20EB5FD10027EBE4 /* TreeTests.swift in Sources */,
+				32CD1D8122683428006507DC /* GenericIterator.swift in Sources */,
 				32AC96DD2223603100EF4BE3 /* FunctionsTests.swift in Sources */,
 				3229705120F1E8F100F7D873 /* LRUCacheTests.swift in Sources */,
 				3226FB4F206D64DF0007CEF3 /* Singleton.swift in Sources */,
@@ -584,6 +607,7 @@
 				3229705720F27EA400F7D873 /* CopyOnWrite.swift in Sources */,
 				3226FB422068BEE50007CEF3 /* AbstractFactory.swift in Sources */,
 				324354D520ED57F80027EBE4 /* GraphAlgorithmsTests.swift in Sources */,
+				32CD1D8722683A68006507DC /* ConcurrentQueue.swift in Sources */,
 				3226FB55206DA1380007CEF3 /* Adapter.swift in Sources */,
 				324354D020ED367A0027EBE4 /* ActiveObject.swift in Sources */,
 				3226FB49206CC3560007CEF3 /* Factory.swift in Sources */,
