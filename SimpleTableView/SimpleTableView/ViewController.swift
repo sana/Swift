@@ -19,7 +19,7 @@ class SimpleMyUITableViewDataSource : MyUITableViewDataSource {
     }
 
     func cell(atIndexPath indexPath: IndexPath) -> UITableViewCell {
-        let cell:UITableViewCell = UITableViewCell(style: UITableViewCellStyle.default, reuseIdentifier: "SimpleMyUITableViewDataSource")
+        let cell:UITableViewCell = UITableViewCell(style: UITableViewCell.CellStyle.default, reuseIdentifier: "SimpleMyUITableViewDataSource")
         cell.textLabel?.text = "\(indexPath.row)"
         return cell
     }
