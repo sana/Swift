@@ -75,7 +75,7 @@ class ViewController: UIViewController {
         return
       }
       let indexPath = IndexPath(row: self.people.count - 1, section: 0)
-      self.tableView.insertRows(at: [indexPath], with: UITableView.RowAnimation.fade)
+      self.tableView.insertRows(at: [indexPath], with: UITableViewRowAnimation.fade)
     }
 
     let cancelAction = UIAlertAction(title: "Cancel",
