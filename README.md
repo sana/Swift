@@ -7,6 +7,7 @@ learn the Swift programming language. The language itself is nice, although
 I noticed a few problems:
 * The toolchain is still under development
 * Alot of confusion around Swift 1.0 and Swift 2.0
+* Swift 5 solved alot of pain points I've seen in the past.
 
 Most of the projects are actually online programming challanges.
 
