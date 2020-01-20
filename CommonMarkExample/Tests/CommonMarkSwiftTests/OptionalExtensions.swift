@@ -12,7 +12,7 @@ enum OptionalError : Error {
 }
 
 public extension Optional {
-    public func required() throws -> Wrapped {
+    func required() throws -> Wrapped {
         switch self {
         case let .some(wrapped):
             return wrapped

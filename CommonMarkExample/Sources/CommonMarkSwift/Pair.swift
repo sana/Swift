@@ -17,7 +17,8 @@ extension Pair : Equatable, Hashable where U : Hashable, V : Hashable {
         return lhs.first == rhs.first && lhs.second == rhs.second
     }
 
-    var hashValue: Int {
-        return first.hashValue ^ second.hashValue
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(first)
+        hasher.combine(second)
     }
 }
