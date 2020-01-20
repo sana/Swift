@@ -62,7 +62,7 @@ extension FIFOQueue : Collection {
 extension Substring {
     var nextWordRange: Range<Index> {
         let start = drop(while: { $0 == " "})
-        let end = start.index(where: { $0 == " " }) ?? endIndex
+        let end = start.firstIndex(where: { $0 == " " }) ?? endIndex
         return start.startIndex..<end
     }
 }

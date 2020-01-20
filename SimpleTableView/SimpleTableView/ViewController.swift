@@ -43,12 +43,14 @@ class MyUITableView : UIScrollView /* UITableView */ {
     override func layoutSubviews() {
         super.layoutSubviews()
 
-        guard self.contentOffset.y >= 0 else {
+        let yOffset = self.contentOffset.y + self.adjustedContentInset.top
+
+        guard yOffset >= 0 else {
             return
         }
 
         // How many cells are scrolled offscreen
-        let firstCellTag = Int(round((self.contentOffset.y - self.adjustedContentInset.top) / cellHeight))
+        let firstCellTag = Int(ceil(yOffset / cellHeight))
 
         // Update the cells' frame and the underlying text
         for i in 0..<cells.count {
@@ -67,23 +69,22 @@ class MyUITableView : UIScrollView /* UITableView */ {
     override var frame: CGRect {
         didSet {
             // Once we know the frame, we want to create the cells this UIScrollView manages
-            let cellsCount = Int(round(self.frame.height / cellHeight))
+            let cellsCount = Int(ceil(self.frame.height / cellHeight))
             for cell in self.cells {
                 cell.removeFromSuperview()
             }
             self.cells = [UITableViewCell]()
             for i in 0..<cellsCount + 2 {
                 let cell = dataSource.cell(atIndexPath: IndexPath(row: i, section: 0))
-                cell.frame = CGRect(x: 0, y: CGFloat(i) * cellHeight, width: self.frame.width, height: cellHeight)
                 self.cells.append(cell)
                 self.addSubview(cell)
             }
+            self.setNeedsLayout()
         }
     }
 }
 
-extension MyUITableView : UIScrollViewDelegate {
-}
+extension MyUITableView : UIScrollViewDelegate { }
 
 class ViewController: UIViewController {
     private var myUITableView: MyUITableView?

@@ -13,7 +13,7 @@ class SwiftFeaturesTests : XCTestCase {
         var tokens = [String]()
         let values = "one,two,three,four"
         var i = values.startIndex
-        while let comma = values[i..<values.endIndex].index(of: ",") {
+        while let comma = values[i..<values.endIndex].firstIndex(of: ",") {
             tokens.append(String(values[i..<comma]))
             i = values.index(after: comma)
         }

@@ -51,7 +51,7 @@ class Graph {
             return false
         }
         var verticesList = adjancencyList[source]
-        guard let index = verticesList.index(of: destination) else {
+        guard let index = verticesList.firstIndex(of: destination) else {
             return false
         }
         verticesList.remove(at: index)
