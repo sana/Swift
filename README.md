@@ -17,7 +17,9 @@ https://commonmark.org/
 (Design Patterns: Elements of Reusable Object-Oriented Software) and
 standard algorithms studied in CS, and that are popular in interview
 questions.
-* *FlickrSearch* is a simple Flickr client application.
+* *FlickrSearch* is a simple Flickr client;
+** The application is based on UICollectionView, a modern approach to
+UITableView, which is still the standard to my current workspace.
 * *HitList* is a simple app that uses CoreData to persist the state of
 the app. You can alter the state via a navigation item and the table
 view updates intelligently, via tableView.insertRows:with:, instead
