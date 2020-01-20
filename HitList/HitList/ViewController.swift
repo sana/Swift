@@ -70,8 +70,12 @@ class ViewController: UIViewController {
       }
 
       self.save(name: nameToSave)
-      // FIXME: optimzie
-      self.tableView.reloadData()
+      let addedIndex = self.people.count - 1
+      guard addedIndex >= 0 else {
+        return
+      }
+      let indexPath = IndexPath(row: self.people.count - 1, section: 0)
+      self.tableView.insertRows(at: [indexPath], with: UITableViewRowAnimation.fade)
     }
 
     let cancelAction = UIAlertAction(title: "Cancel",
