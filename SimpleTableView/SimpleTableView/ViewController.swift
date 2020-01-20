@@ -15,7 +15,7 @@ protocol MyUITableViewDataSource /* UITableViewDataSource */ {
 
 class SimpleMyUITableViewDataSource : MyUITableViewDataSource {
     func numberOfSections() -> Int {
-        return 1000
+        return 100
     }
 
     func cell(atIndexPath indexPath: IndexPath) -> UITableViewCell {
@@ -44,16 +44,16 @@ class MyUITableView : UIScrollView /* UITableView */ {
         super.layoutSubviews()
 
         let yOffset = self.contentOffset.y + self.adjustedContentInset.top
-
-        guard yOffset >= 0 else {
-            return
-        }
+        let adjustedYOffset = (yOffset >= 0) ? yOffset : 0
 
         // How many cells are scrolled offscreen
-        let firstCellTag = Int(ceil(yOffset / cellHeight))
+        let firstCellTag = Int(ceil(adjustedYOffset / cellHeight))
 
         // Update the cells' frame and the underlying text
         for i in 0..<cells.count {
+            guard (i + firstCellTag) < dataSource.numberOfSections() else {
+                return
+            }
             let cell = cells[i]
             cell.frame = CGRect(x: 0, y: CGFloat(i + firstCellTag) * cellHeight, width: self.frame.width, height: cellHeight)
             cell.textLabel?.text = "\(firstCellTag + i)"
@@ -74,7 +74,7 @@ class MyUITableView : UIScrollView /* UITableView */ {
                 cell.removeFromSuperview()
             }
             self.cells = [UITableViewCell]()
-            for i in 0..<cellsCount + 2 {
+            for i in 0..<cellsCount {
                 let cell = dataSource.cell(atIndexPath: IndexPath(row: i, section: 0))
                 self.cells.append(cell)
                 self.addSubview(cell)
