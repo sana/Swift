@@ -19,12 +19,10 @@ class Object : Hashable, CustomStringConvertible {
         self.id = id
     }
     
-    var hashValue : Int {
-        get {
-            return id.hash
-        }
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
-    
+
     var description: String {
         return "\( NSStringFromClass(type(of: self)) ) \( id )"
     }

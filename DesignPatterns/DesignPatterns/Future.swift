@@ -38,10 +38,8 @@ class Future : Hashable {
         return nil
     }
 
-    var hashValue : Int {
-        get {
-            return UnsafeMutableRawPointer(Unmanaged.passUnretained(self).toOpaque()).hashValue
-        }
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(UnsafeMutableRawPointer(Unmanaged.passUnretained(self).toOpaque()))
     }
 
     // Similar to calling future.begin() and future.wait() in a single call

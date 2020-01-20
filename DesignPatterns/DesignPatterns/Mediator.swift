@@ -46,8 +46,8 @@ class AnyClient: Client {
 
     func notify(mediator: Mediator) { /* override */ }
 
-    var hashValue: Int {
-        return id.hashValue
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
 
     static func == (lhs: AnyClient, rhs: AnyClient) -> Bool {
