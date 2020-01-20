@@ -11,19 +11,19 @@ I noticed a few problems:
 
 Most of the projects are actually online programming challanges.
 
-* CommonMarkExample is a simple Swift wrapper over cmark, a C library
+* *CommonMarkExample* is a simple Swift wrapper over cmark, a C library
 https://commonmark.org/
-* DesignPatterns contains implementations of various design patterns
+* *DesignPatterns* contains implementations of various design patterns
 (Design Patterns: Elements of Reusable Object-Oriented Software) and
 standard algorithms studied in CS, and that are popular in interview
-questions;
-* Update FlickrSearch
-* HitList is a simple app that uses CoreData to persist the state of
+questions.
+* *FlickrSearch* is a simple Flickr client application.
+* *HitList* is a simple app that uses CoreData to persist the state of
 the app. You can alter the state via a navigation item and the table
 view updates intelligently, via tableView.insertRows:with:, instead
 of calling reloadData.
 Note that the data is exposed to Spotlight search.
-* SimpleTableView is a project that implements simple functionality
+* *SimpleTableView* is a project that implements simple functionality
 of a table view controller, a table view, by implementing a custom
 table view datasource and delegate.
 
