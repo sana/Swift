@@ -1,5 +1,5 @@
 //
-//  FlickrGetRecentResponse.swift
+//  FlickrGetRecentResponseModel.swift
 //  FlickrSearch
 //
 //  Created by Laurentiu Dascalu on 7/9/18.
@@ -8,12 +8,12 @@
 
 import Foundation
 
-struct FlickrGetRecentResponse {
+struct FlickrGetRecentResponseModel {
     let queryTimestamp: String
-    let photoResponses: [FlickrPhotoResponse]
+    let photoResponses: [FlickrPhotoResponseModel]
 }
 
-extension FlickrGetRecentResponse {
+extension FlickrGetRecentResponseModel {
     init?(data: Data?) {
         guard let data = data else {
             return nil
@@ -31,8 +31,8 @@ extension FlickrGetRecentResponse {
             else {
                 return nil
             }
-            photoResponses = photoArray.compactMap { photoJSON -> FlickrPhotoResponse? in
-                return FlickrPhotoResponse(dictionary: photoJSON as? [String : Any])
+            photoResponses = photoArray.compactMap { photoJSON -> FlickrPhotoResponseModel? in
+                return FlickrPhotoResponseModel(dictionary: photoJSON as? [String : Any])
             }
 
             let date = Date()
@@ -53,15 +53,5 @@ extension FlickrGetRecentResponse {
         } catch {
             return nil
         }
-    }
-}
-
-extension FlickrGetRecentResponse : FlickrResponseModel {
-    func title() -> String {
-        return queryTimestamp
-    }
-
-    func photos() -> [FlickrPhotoResponse] {
-        return photoResponses
     }
 }

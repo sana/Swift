@@ -9,29 +9,47 @@
 import Foundation
 import UIKit
 
-class FlickrAPI {
-    let defaultSession = URLSession(configuration: .default)
-    var dataTasks: [URL: URLSessionDataTask] = [URL: URLSessionDataTask]()
-    let serialQueue = DispatchQueue(label: "Flickr.dataTasks")
+final class FlickrAPI {
+    private let defaultSession = URLSession(configuration: .default)
+    private var dataTasks: [URL: URLSessionDataTask] = [URL: URLSessionDataTask]()
+    private let serialQueue = DispatchQueue(label: "Flickr.dataTasks")
+    private let imageCache = ImageCache()
 
-    func photosSearch(forSearchText searchText: String, completion: @escaping ((result: FlickrPhotosSearchResponse?, error: Error?)) -> Void) {
+    func photosSearch(
+        forSearchText searchText: String,
+        completion: @escaping (Result<FlickrPhotosSearchResponseModel, Error>) -> Void
+    ) {
+        assert(Thread.isMainThread)
         if var urlComponents = URLComponents(string: FlickrConfiguration.flickrURL) {
             let methodQueryItem = URLQueryItem(name: "method", value: "flickr.photos.search")
             let apiKeyQueryItem = URLQueryItem(name: "api_key", value: FlickrConfiguration.apiKey)
             let formatQueryItem = URLQueryItem(name: "format", value: "json")
             let noJSONCallbackQueryItem = URLQueryItem(name: "nojsoncallback", value: "1")
             let textQueryItem = URLQueryItem(name: "text", value: searchText)
-            urlComponents.queryItems = [methodQueryItem, apiKeyQueryItem, formatQueryItem, noJSONCallbackQueryItem, textQueryItem]
+
+            urlComponents.queryItems = [
+                methodQueryItem,
+                apiKeyQueryItem,
+                formatQueryItem,
+                noJSONCallbackQueryItem,
+                textQueryItem
+            ]
+
             if
                 let url = urlComponents.url,
                 dataTask(forURL: url) == nil
             {
                 let dataTask = defaultSession.dataTask(with: url) { [weak self] data, response, error in
-                    DispatchQueue.main.async {
-                        self?.set(dataTask: nil, forURL: url)
+                    self?.set(dataTask: nil, forURL: url)
+                    let photosSearch = FlickrPhotosSearchResponseModel(data: data, searchText: searchText)
+
+                    if let nonNilModel = photosSearch {
+                        completion(.success(nonNilModel))
+                    } else if let nonNilError = error {
+                        completion(.failure(nonNilError))
+                    } else {
+                        completion(.failure(FlickrAPIError.internalError))
                     }
-                    let photosSearch = FlickrPhotosSearchResponse(data: data, searchText: searchText)
-                    completion((photosSearch, error: error))
                 }
                 self.set(dataTask: dataTask, forURL: url)
                 dataTask.resume()
@@ -39,23 +57,37 @@ class FlickrAPI {
         }
     }
 
-    func getRecent(completion: @escaping ((result: FlickrGetRecentResponse?, error: Error?)) -> Void) {
+    func getRecent(
+        completion: @escaping (Result<FlickrGetRecentResponseModel, Error>) -> Void
+    ) {
+        assert(Thread.isMainThread)
         if var urlComponents = URLComponents(string: FlickrConfiguration.flickrURL) {
             let methodQueryItem = URLQueryItem(name: "method", value: "flickr.photos.getRecent")
             let apiKeyQueryItem = URLQueryItem(name: "api_key", value: FlickrConfiguration.apiKey)
             let formatQueryItem = URLQueryItem(name: "format", value: "json")
             let noJSONCallbackQueryItem = URLQueryItem(name: "nojsoncallback", value: "1")
-            urlComponents.queryItems = [methodQueryItem, apiKeyQueryItem, formatQueryItem, noJSONCallbackQueryItem]
+            urlComponents.queryItems = [
+                methodQueryItem,
+                apiKeyQueryItem,
+                formatQueryItem,
+                noJSONCallbackQueryItem
+            ]
+
             if
                 let url = urlComponents.url,
                 dataTask(forURL: url) == nil
             {
                 let dataTask = defaultSession.dataTask(with: url) { [weak self] data, response, error in
-                    DispatchQueue.main.async {
-                        self?.set(dataTask: nil, forURL: url)
+                    self?.set(dataTask: nil, forURL: url)
+                    let getRecentResponse = FlickrGetRecentResponseModel(data: data)
+
+                    if let nonNilModel = getRecentResponse {
+                        completion(.success(nonNilModel))
+                    } else if let nonNilError = error {
+                        completion(.failure(nonNilError))
+                    } else {
+                        completion(.failure(FlickrAPIError.internalError))
                     }
-                    let getRecentResponse = FlickrGetRecentResponse(data: data)
-                    completion((getRecentResponse, error: error))
                 }
                 self.set(dataTask: dataTask, forURL: url)
                 dataTask.resume()
@@ -63,7 +95,11 @@ class FlickrAPI {
         }
     }
 
-    func fetch(imageAtURL url: String, completion: @escaping ((result: UIImage?, error: Error?)) -> Void) {
+    func fetch(imageAtURL url: String, completion: @escaping (Result<UIImage, Error>) -> Void) {
+        assert(Thread.isMainThread)
+        if let cachedImage = imageCache[url as NSString] {
+            completion(.success(cachedImage))
+        }
         if let URL = URL(string: url) {
             let dataTask = defaultSession.dataTask(with: URL) { [weak self] data, response, error in
                 self?.set(dataTask: nil, forURL: URL)
@@ -73,7 +109,14 @@ class FlickrAPI {
                 } else {
                     image = nil
                 }
-                completion((result: image, error: error))
+
+                if let nonNilImage = image {
+                    completion(.success(nonNilImage))
+                } else if let nonNilError = error {
+                    completion(.failure(nonNilError))
+                } else {
+                    completion(.failure(FlickrAPIError.internalError))
+                }
             }
             self.set(dataTask: dataTask, forURL: URL)
             dataTask.resume()
@@ -92,5 +135,9 @@ class FlickrAPI {
         serialQueue.sync {
             self.dataTasks[url] = dataTask
         }
+    }
+
+    enum FlickrAPIError : Error {
+        case internalError
     }
 }
