@@ -9,21 +9,46 @@
 import UIKit
 
 class FlickrPhotoCell : UICollectionViewCell {
-    @IBOutlet weak var imageView: UIImageView!
-    var viewModel: FlickrPhotoResponse? {
+    private let stackView: UIStackView
+    private let imageView: UIImageView
+    private let label: UILabel
+
+    struct Constants {
+        static let imageHeight: CGFloat = 72
+    }
+
+    var viewModel: FlickrPhotoResponseViewModel? {
         didSet {
-            self.imageView.image = FlickrSharedResources.notFoundUIImage
+            imageView.image = FlickrSharedResources.notFoundUIImage
+            label.text = viewModel?.title
         }
     }
 
     override init(frame: CGRect) {
-        self.viewModel = nil
+        imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+        imageView.layer.borderColor = UIColor.black.cgColor
+        imageView.layer.borderWidth = 2.0
+
+        label = UILabel()
+        label.textAlignment = .left
+
+        stackView = UIStackView(arrangedSubviews: [imageView, label])
+        stackView.alignment = .top
+        stackView.distribution = .equalCentering
+        stackView.axis = .vertical
+        stackView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+
+        viewModel = nil
         super.init(frame: frame)
+
+        autoresizesSubviews = true
+
+        addSubview(stackView)
     }
 
     required init?(coder aDecoder: NSCoder) {
-        self.viewModel = nil
-        super.init(coder: aDecoder)
+        fatalError("init(coder:) has not been implemented")
     }
 
     override func prepareForReuse() {
@@ -32,6 +57,29 @@ class FlickrPhotoCell : UICollectionViewCell {
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        self.imageView.frame = self.bounds
+        self.stackView.frame = self.bounds
+    }
+
+    func update(withPhotoResponse photoResponse: FlickrPhotoResponseViewModel, image: UIImage?) {
+        guard
+            photoResponse.imageURL == viewModel?.imageURL
+        else {
+            // Cell has been since reused
+            return
+        }
+
+        guard
+            let originalImage = image ?? FlickrSharedResources.notFoundUIImage,
+            originalImage.size.height > 0
+        else {
+            return
+        }
+
+        let newSize = CGSize(
+            width: originalImage.size.width / originalImage.size.height * Constants.imageHeight,
+            height: Constants.imageHeight
+        )
+        imageView.image = originalImage.scaleImage(toSize: newSize)
+        setNeedsLayout()
     }
 }

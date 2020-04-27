@@ -8,21 +8,23 @@
 
 import Foundation
 
-struct FlickrPhotoResponse {
+struct FlickrPhotoResponseModel {
     let farmID: String
     let serverID: String
     let photoID: String
     let secret: String
+    let title: String
 }
 
-extension FlickrPhotoResponse {
+extension FlickrPhotoResponseModel {
     init?(dictionary: [String : Any]?) {
         guard
             let dictionary = dictionary,
             let farmID = dictionary["farm"] as? Int,
             let serverID = dictionary["server"] as? String,
             let photoID = dictionary["id"] as? String,
-            let secret = dictionary["secret"] as? String
+            let secret = dictionary["secret"] as? String,
+            let title = dictionary["title"] as? String
         else {
             return nil
         }
@@ -30,17 +32,8 @@ extension FlickrPhotoResponse {
         self.serverID = serverID
         self.photoID = photoID
         self.secret = secret
+        self.title = title
     }
 }
 
-extension FlickrPhotoResponse : FetchableURLProtocol {
-    func url() -> String {
-        return "https://farm\(farmID).staticflickr.com/\(serverID)/\(photoID)_\(secret)_m.jpg"
-    }
-}
-
-extension FlickrPhotoResponse : Equatable { }
-
-func ==(lhs: FlickrPhotoResponse, rhs: FlickrPhotoResponse) -> Bool {
-    return lhs.url() == rhs.url()
-}
+extension FlickrPhotoResponseModel : Equatable { }
