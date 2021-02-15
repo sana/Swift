@@ -117,6 +117,8 @@
 		32C23D7A21A8726900E26D3B /* CollectionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32C23D7821A8726900E26D3B /* CollectionsTests.swift */; };
 		32C23D7C21AD1C1500E26D3B /* Sorting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32C23D7B21AD1C1500E26D3B /* Sorting.swift */; };
 		32C23D7D21AD1C1500E26D3B /* Sorting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32C23D7B21AD1C1500E26D3B /* Sorting.swift */; };
+		32CAFC3325CF2DA1008A0E75 /* InterviewQuestions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32CAFC3225CF2DA1008A0E75 /* InterviewQuestions.swift */; };
+		32CAFC3725CF2DCA008A0E75 /* InterviewQuestionsSolved.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32CAFC3625CF2DCA008A0E75 /* InterviewQuestionsSolved.swift */; };
 		32CD1D8022683428006507DC /* GenericIterator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32CD1D7F22683428006507DC /* GenericIterator.swift */; };
 		32CD1D8122683428006507DC /* GenericIterator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32CD1D7F22683428006507DC /* GenericIterator.swift */; };
 		32CD1D83226834A7006507DC /* GenericIteratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32CD1D82226834A7006507DC /* GenericIteratorTests.swift */; };
@@ -209,6 +211,8 @@
 		32C23D7521A79BE500E26D3B /* Collections.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collections.swift; sourceTree = "<group>"; };
 		32C23D7821A8726900E26D3B /* CollectionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionsTests.swift; sourceTree = "<group>"; };
 		32C23D7B21AD1C1500E26D3B /* Sorting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sorting.swift; sourceTree = "<group>"; };
+		32CAFC3225CF2DA1008A0E75 /* InterviewQuestions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterviewQuestions.swift; sourceTree = "<group>"; };
+		32CAFC3625CF2DCA008A0E75 /* InterviewQuestionsSolved.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterviewQuestionsSolved.swift; sourceTree = "<group>"; };
 		32CD1D7F22683428006507DC /* GenericIterator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericIterator.swift; sourceTree = "<group>"; };
 		32CD1D82226834A7006507DC /* GenericIteratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericIteratorTests.swift; sourceTree = "<group>"; };
 		32CD1D8522683A68006507DC /* ConcurrentQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcurrentQueue.swift; sourceTree = "<group>"; };
@@ -402,6 +406,8 @@
 				32C23D7821A8726900E26D3B /* CollectionsTests.swift */,
 				32AC96DC2223603100EF4BE3 /* FunctionsTests.swift */,
 				32CD1D82226834A7006507DC /* GenericIteratorTests.swift */,
+				32CAFC3225CF2DA1008A0E75 /* InterviewQuestions.swift */,
+				32CAFC3625CF2DCA008A0E75 /* InterviewQuestionsSolved.swift */,
 			);
 			path = DesignPatternsTests;
 			sourceTree = "<group>";
@@ -450,7 +456,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0920;
-				LastUpgradeCheck = 1130;
+				LastUpgradeCheck = 1240;
 				ORGANIZATIONNAME = "Laurentiu Dascalu";
 				TargetAttributes = {
 					326F757A1C2827A0001CF09D = {
@@ -574,6 +580,7 @@
 				3226FB5C206DA6490007CEF3 /* CompositeTests.swift in Sources */,
 				32C23D7421A7961400E26D3B /* LinkedListTests.swift in Sources */,
 				324354C420EB5CCB0027EBE4 /* TemplateMethod.swift in Sources */,
+				32CAFC3725CF2DCA008A0E75 /* InterviewQuestionsSolved.swift in Sources */,
 				324354C820EB5FB30027EBE4 /* FutureTests.swift in Sources */,
 				3226FB452068C0460007CEF3 /* BuilderTests.swift in Sources */,
 				3226FB6C20759EED0007CEF3 /* DictionaryCacheImplementation.swift in Sources */,
@@ -598,6 +605,7 @@
 				324354C120EB55CC0027EBE4 /* Mediator.swift in Sources */,
 				3229704E20F1D17B00F7D873 /* LRUCacheImplementation.swift in Sources */,
 				3226FB69207595330007CEF3 /* FacadeTests.swift in Sources */,
+				32CAFC3325CF2DA1008A0E75 /* InterviewQuestions.swift in Sources */,
 				324354C320EB5C990027EBE4 /* TemplateMethodTests.swift in Sources */,
 				324354D320ED431B0027EBE4 /* BinarySearchTree.swift in Sources */,
 				32A4CECC20E023ED007996E6 /* ProxyTests.swift in Sources */,
@@ -653,6 +661,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -708,6 +717,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
